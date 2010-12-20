@@ -24,10 +24,9 @@ class AppKernel extends Kernel
             new Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
             //new Symfony\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle(),
             //new Symfony\Bundle\DoctrineMongoDBBundle\DoctrineMongoDBBundle(),
-			// adding XWC-CORE BUNDLES
-			new Bundle\TangentLabs\XwcCoreBundle\XwcCoreBundle(),
+            new Bundle\TangentLabs\XwcCoreBundle\XwcCoreBundle(),
             // register your bundles
-            //new Application\...
+            //new Application\HelloBundle\HelloBundle(),
         );
 
         if ($this->isDebug()) {
