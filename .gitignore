@@ -1,0 +1,9 @@
+vendor/
+app/cache/*
+app/logs/*
+.buildpath
+.project
+.settings/*
+*~
+.DS_Store
+
