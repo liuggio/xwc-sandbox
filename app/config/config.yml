@@ -22,6 +22,8 @@ twig.config:
 #    password: ~
 #doctrine.orm: ~
 
+doctrine_odm.mongodb: ~
+
 ## Swiftmailer Configuration
 #swiftmailer.config:
 #    transport:  smtp

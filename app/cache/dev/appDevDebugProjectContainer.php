@@ -983,6 +983,224 @@ class appDevDebugProjectContainer extends Container implements TaggedContainerIn
     }
 
     /**
+     * Gets the 'doctrine.odm.mongodb.metadata.chain' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.metadata.driver_chain_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_Metadata_ChainService()
+    {
+        return $this->services['doctrine.odm.mongodb.metadata.chain'] = new \Doctrine\ODM\MongoDB\Mapping\Driver\DriverChain();
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.metadata.annotation' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.metadata.annotation_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_Metadata_AnnotationService()
+    {
+        return $this->services['doctrine.odm.mongodb.metadata.annotation'] = new \Doctrine\ODM\MongoDB\Mapping\Driver\AnnotationDriver($this->get('doctrine.odm.mongodb.metadata.annotation_reader'), array(0 => '/var/www/xwc-sandbox/src/Bundle/TangentLabs/XwcCoreBundle/Document'));
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.metadata.annotation_reader' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.metadata.annotation_reader_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_Metadata_AnnotationReaderService()
+    {
+        $this->services['doctrine.odm.mongodb.metadata.annotation_reader'] = $instance = new \Doctrine\Common\Annotations\AnnotationReader($this->get('doctrine.odm.mongodb.cache.array'));
+        $instance->setAnnotationNamespaceAlias('Doctrine\\ODM\\MongoDB\\Mapping\\', 'mongodb');
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.metadata.xml' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.metadata.xml_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_Metadata_XmlService()
+    {
+        return $this->services['doctrine.odm.mongodb.metadata.xml'] = new \Doctrine\ODM\MongoDB\Mapping\Driver\XmlDriver(array());
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.metadata.yml' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.metadata.yml_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_Metadata_YmlService()
+    {
+        return $this->services['doctrine.odm.mongodb.metadata.yml'] = new \Doctrine\ODM\MongoDB\Mapping\Driver\YamlDriver(array());
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.cache.array' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.cache.array_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_Cache_ArrayService()
+    {
+        return $this->services['doctrine.odm.mongodb.cache.array'] = new \Doctrine\Common\Cache\ArrayCache();
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.logger' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.logger_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_LoggerService()
+    {
+        return $this->services['doctrine.odm.mongodb.logger'] = new \Symfony\Bundle\DoctrineMongoDBBundle\Logger\DoctrineMongoDBLogger($this->get('logger', ContainerInterface::NULL_ON_INVALID_REFERENCE));
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.data_collector' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.data_collector_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_DataCollectorService()
+    {
+        return $this->services['doctrine.odm.mongodb.data_collector'] = new \Symfony\Bundle\DoctrineMongoDBBundle\DataCollector\DoctrineMongoDBDataCollector($this->get('doctrine.odm.mongodb.logger'));
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.event_manager' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.event_manager_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_EventManagerService()
+    {
+        $this->services['doctrine.odm.mongodb.event_manager'] = $instance = new \Symfony\Bundle\DoctrineMongoDBBundle\Event\EventManager();
+        $instance->loadTaggedEventListeners($this);
+        $instance->loadTaggedEventSubscribers($this);
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.default_connection' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.connection_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_DefaultConnectionService()
+    {
+        return $this->services['doctrine.odm.mongodb.default_connection'] = new \Doctrine\MongoDB\Connection(NULL, array(), $this->get('doctrine.odm.mongodb.default_configuration'));
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.default_configuration' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.configuration_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_DefaultConfigurationService()
+    {
+        $this->services['doctrine.odm.mongodb.default_configuration'] = $instance = new \Doctrine\ODM\MongoDB\Configuration();
+        $instance->setDocumentNamespaces(array());
+        $instance->setMetadataCacheImpl($this->get('doctrine.odm.mongodb.default_metadata_cache'));
+        $instance->setMetadataDriverImpl($this->get('doctrine.odm.mongodb.metadata'));
+        $instance->setProxyDir('/var/www/xwc-sandbox/app/cache/dev/doctrine/odm/mongodb/Proxies');
+        $instance->setProxyNamespace('Proxies');
+        $instance->setAutoGenerateProxyClasses(false);
+        $instance->setDefaultDB('default');
+        $instance->setLoggerCallable(array(0 => $this->get('doctrine.odm.mongodb.logger'), 1 => 'logQuery'));
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.metadata' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.metadata.driver_chain_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_MetadataService()
+    {
+        return $this->services['doctrine.odm.mongodb.metadata'] = new \Doctrine\ODM\MongoDB\Mapping\Driver\DriverChain();
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.default_metadata_cache' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.cache.array_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_DefaultMetadataCacheService()
+    {
+        return $this->services['doctrine.odm.mongodb.default_metadata_cache'] = new \Doctrine\Common\Cache\ArrayCache();
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.default_event_manager' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.event_manager_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_DefaultEventManagerService()
+    {
+        $this->services['doctrine.odm.mongodb.default_event_manager'] = $instance = new \Symfony\Bundle\DoctrineMongoDBBundle\Event\EventManager();
+        $instance->loadTaggedEventListeners($this);
+        $instance->loadTaggedEventListeners($this, 'doctrine.odm.mongodb.default_event_listener');
+        $instance->loadTaggedEventSubscribers($this);
+        $instance->loadTaggedEventSubscribers($this, 'doctrine.odm.mongodb.default_event_subscriber');
+
+        return $instance;
+    }
+
+    /**
+     * Gets the 'doctrine.odm.mongodb.default_document_manager' service.
+     *
+     * This service is shared.
+     * This method always returns the same instance of the service.
+     *
+     * @return Object A %doctrine.odm.mongodb.document_manager_class% instance.
+     */
+    protected function getDoctrine_Odm_Mongodb_DefaultDocumentManagerService()
+    {
+        return $this->services['doctrine.odm.mongodb.default_document_manager'] = call_user_func(array('Doctrine\\ODM\\MongoDB\\DocumentManager', 'create'), $this->get('doctrine.odm.mongodb.default_connection'), $this->get('doctrine.odm.mongodb.default_configuration'), $this->get('doctrine.odm.mongodb.default_event_manager'));
+    }
+
+    /**
      * Gets the 'debug.toolbar' service.
      *
      * This service is shared.
@@ -1110,6 +1328,36 @@ class appDevDebugProjectContainer extends Container implements TaggedContainerIn
     protected function getSession_StorageService()
     {
         return $this->get('session.storage.native');
+    }
+
+    /**
+     * Gets the doctrine.odm.mongodb.cache service alias.
+     *
+     * @return Object An instance of the doctrine.odm.mongodb.cache.array service
+     */
+    protected function getDoctrine_Odm_Mongodb_CacheService()
+    {
+        return $this->get('doctrine.odm.mongodb.cache.array');
+    }
+
+    /**
+     * Gets the security.user.document_manager service alias.
+     *
+     * @return Object An instance of the doctrine.odm.mongodb.default_document_manager service
+     */
+    protected function getSecurity_User_DocumentManagerService()
+    {
+        return $this->get('doctrine.odm.mongodb.default_document_manager');
+    }
+
+    /**
+     * Gets the doctrine.odm.mongodb.document_manager service alias.
+     *
+     * @return Object An instance of the doctrine.odm.mongodb.default_document_manager service
+     */
+    protected function getDoctrine_Odm_Mongodb_DocumentManagerService()
+    {
+        return $this->get('doctrine.odm.mongodb.default_document_manager');
     }
 
     /**
@@ -1301,6 +1549,11 @@ class appDevDebugProjectContainer extends Container implements TaggedContainerIn
                         'template' => 'WebProfilerBundle:Collector:memory',
                     ),
                 ),
+                'doctrine.odm.mongodb.data_collector' => array(
+                    0 => array(
+                        'template' => 'DoctrineMongoDBBundle:Collector:mongodb',
+                    ),
+                ),
             ),
             'templating.renderer' => array(
                 'twig.renderer' => array(
@@ -1326,6 +1579,13 @@ class appDevDebugProjectContainer extends Container implements TaggedContainerIn
                     ),
                 ),
                 'twig.security.form' => array(
+                    0 => array(
+
+                    ),
+                ),
+            ),
+            'doctrine.odm.mongodb.document_manager' => array(
+                'doctrine.odm.mongodb.default_document_manager' => array(
                     0 => array(
 
                     ),
@@ -1361,8 +1621,9 @@ class appDevDebugProjectContainer extends Container implements TaggedContainerIn
                 2 => 'Symfony\\Bundle\\ZendBundle\\ZendBundle',
                 3 => 'Symfony\\Bundle\\SwiftmailerBundle\\SwiftmailerBundle',
                 4 => 'Symfony\\Bundle\\DoctrineBundle\\DoctrineBundle',
-                5 => 'Bundle\\TangentLabs\\XwcCoreBundle\\XwcCoreBundle',
-                6 => 'Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle',
+                5 => 'Symfony\\Bundle\\DoctrineMongoDBBundle\\DoctrineMongoDBBundle',
+                6 => 'Bundle\\TangentLabs\\XwcCoreBundle\\XwcCoreBundle',
+                7 => 'Symfony\\Bundle\\WebProfilerBundle\\WebProfilerBundle',
             ),
             'kernel.charset' => 'UTF-8',
             'request_listener.class' => 'Symfony\\Bundle\\FrameworkBundle\\RequestListener',
@@ -1558,6 +1819,44 @@ class appDevDebugProjectContainer extends Container implements TaggedContainerIn
             'twig.form.resources' => array(
                 0 => 'TwigBundle::form.twig',
             ),
+            'doctrine.odm.mongodb.default_document_manager' => 'default',
+            'doctrine.odm.mongodb.default_connection' => 'default',
+            'doctrine.odm.mongodb.default_database' => 'default',
+            'doctrine.odm.mongodb.metadata_cache_driver' => 'array',
+            'doctrine.odm.mongodb.connection_class' => 'Doctrine\\MongoDB\\Connection',
+            'doctrine.odm.mongodb.configuration_class' => 'Doctrine\\ODM\\MongoDB\\Configuration',
+            'doctrine.odm.mongodb.document_manager_class' => 'Doctrine\\ODM\\MongoDB\\DocumentManager',
+            'doctrine.odm.mongodb.logger_class' => 'Symfony\\Bundle\\DoctrineMongoDBBundle\\Logger\\DoctrineMongoDBLogger',
+            'doctrine.odm.mongodb.data_collector_class' => 'Symfony\\Bundle\\DoctrineMongoDBBundle\\DataCollector\\DoctrineMongoDBDataCollector',
+            'doctrine.odm.mongodb.event_manager_class' => 'Symfony\\Bundle\\DoctrineMongoDBBundle\\Event\\EventManager',
+            'doctrine.odm.mongodb.proxy_namespace' => 'Proxies',
+            'doctrine.odm.mongodb.auto_generate_proxy_classes' => false,
+            'doctrine.odm.mongodb.cache.array_class' => 'Doctrine\\Common\\Cache\\ArrayCache',
+            'doctrine.odm.mongodb.cache.apc_class' => 'Doctrine\\Common\\Cache\\ApcCache',
+            'doctrine.odm.mongodb.cache.memcache_class' => 'Doctrine\\Common\\Cache\\MemcacheCache',
+            'doctrine.odm.mongodb.cache.memcache_host' => 'localhost',
+            'doctrine.odm.mongodb.cache.memcache_port' => 11211,
+            'doctrine.odm.mongodb.cache.memcache_instance_class' => 'Memcache',
+            'doctrine.odm.mongodb.cache.xcache_class' => 'Doctrine\\Common\\Cache\\XcacheCache',
+            'doctrine.odm.mongodb.metadata.driver_chain_class' => 'Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\DriverChain',
+            'doctrine.odm.mongodb.metadata.annotation_class' => 'Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\AnnotationDriver',
+            'doctrine.odm.mongodb.metadata.annotation_reader_class' => 'Doctrine\\Common\\Annotations\\AnnotationReader',
+            'doctrine.odm.mongodb.metadata.annotation_default_namespace' => 'Doctrine\\ODM\\MongoDB\\Mapping\\',
+            'doctrine.odm.mongodb.metadata.xml_class' => 'Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\XmlDriver',
+            'doctrine.odm.mongodb.metadata.yml_class' => 'Doctrine\\ODM\\MongoDB\\Mapping\\Driver\\YamlDriver',
+            'doctrine.odm.mongodb.mapping_dirs' => array(
+
+            ),
+            'doctrine.odm.mongodb.xml_mapping_dirs' => array(
+
+            ),
+            'doctrine.odm.mongodb.yml_mapping_dirs' => array(
+
+            ),
+            'doctrine.odm.mongodb.document_dirs' => array(
+                0 => '/var/www/xwc-sandbox/src/Bundle/TangentLabs/XwcCoreBundle/Document',
+            ),
+            'security.user.provider.document.class' => 'Symfony\\Bundle\\DoctrineMongoDBBundle\\Security\\DocumentUserProvider',
             'debug.toolbar.class' => 'Symfony\\Bundle\\WebProfilerBundle\\WebDebugToolbarListener',
             'debug.toolbar.intercept_redirects' => true,
             'zend.logger.class' => 'Symfony\\Bundle\\ZendBundle\\Logger\\Logger',

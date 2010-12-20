@@ -23,7 +23,7 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
             //new Symfony\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle(),
-            //new Symfony\Bundle\DoctrineMongoDBBundle\DoctrineMongoDBBundle(),
+            new Symfony\Bundle\DoctrineMongoDBBundle\DoctrineMongoDBBundle(),
             new Bundle\TangentLabs\XwcCoreBundle\XwcCoreBundle(),
             // register your bundles
             //new Application\HelloBundle\HelloBundle(),
