@@ -1,0 +1,8 @@
+XWC Symfony Sandbox
+====================
+
+
+remember to
+chmod 777 app/cache -R
+chmod 777 app/logs -R 
+
