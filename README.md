@@ -18,8 +18,8 @@ with this sandbox.
 1. [Fork the project on github](http://help.github.com/forking/)
 2. Set permissions
 
-    chmod 777 app/cache -R
-    chmod 777 app/logs -R 
+		chmod 777 app/cache -R
+		chmod 777 app/logs -R 
 
 ## Recommendation on YML / PHP / XML configuration
 
