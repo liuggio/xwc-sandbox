@@ -1,6 +1,4 @@
 vendor/
-app/cache/*
-app/logs/*
 .buildpath
 .project
 *~
