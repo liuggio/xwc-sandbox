@@ -15,8 +15,8 @@ with this sandbox.
 
 ## Installation instructions
 
-1 [Fork the project on github](http://help.github.com/forking/)
-2 Set permissions
+1. [Fork the project on github](http://help.github.com/forking/)
+2. Set permissions
 
     chmod 777 app/cache -R
     chmod 777 app/logs -R 
