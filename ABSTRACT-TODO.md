@@ -37,10 +37,11 @@
           // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
 		 									
 								
-## Entity "Mote"  is only a html content with an index name //maybe is not the best name (we should call obj or tag )
+## Entity "Mote"  is only a html content with an index name 
+
     $tag["name"]    is a primary key in his page
     $tag["content"]="html data"
-  
+  maybe is not the best name any other idea for the name (we'd call obj or tag ) 
     
 ## Entity "Template" 
     $template["id"] primary  indexed
