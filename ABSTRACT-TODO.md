@@ -48,15 +48,13 @@
     $template["content-url or content-db"] 
     // the information of the template'd saved or in a twig file or in the database.   
    
-## Entity "PageTemplate"
-    $PageTemplate["template_id"] primary
-    $PageTemplate["page_id"]     primary
      
    
 # TODO list (limit 0,2 is very long :) )
-* step0 
-    -> create the doctrine Entity
-    -> create the operation for page
-    -> test page
+* step0
+  * clean this file
+  * create the doctrine Entity
+  * create the operation for page
+  * create a test page
 * step1
-    -> add attributes to the page: author, father page, section
+  * add attributes to the page: author, father page, section
