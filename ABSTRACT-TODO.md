@@ -53,7 +53,7 @@
    
 # TODO list (limit 0,2 is very long :) )
 * step0
-  * clean this file
+  * clean this file ( formatting, adding ideas, entities, corrections, comments)
   * create the doctrine Entity
   * create the operation for page
   * create a test page
