@@ -17,7 +17,13 @@
     $page[1]["tag"]["html"]["head"]["meta"]=new array of Mote()  OneToMany
     $page[1]["tag"]["html"]["body"].attributes=new array of Mote() //addMote("attr1","onload..");addMote("attr1","onclose.."];)
     $page[1]["tag"]["html"]["body"]=new array of Mote()  OneToMany
-   
+  
+note: in this document there are only the conceptual Classed not the real one.
+      eg. the array tag and html will not be an Entity in the future, maybe they'll become an operator   
+          $page[1]["tag_html_attributes"]
+	  $page[1]["tag_html_motes"]=...
+	  $page[1]["tag_html_head_title"]=...
+ 
 ##Operation:
 * 1) we want to take all the Html data stored in the array "tag"
 * 2) we want to add/modified/remove certain mote from a page
@@ -54,7 +60,7 @@
 # TODO list (limit 0,2 is very long :) )
 * step0
   * clean this file ( formatting, adding ideas, entities, corrections, comments)
-  * create the doctrine Entity
+  * creation of the doctrine Entities  
   * create the operation for page
   * create a test page
 * step1
