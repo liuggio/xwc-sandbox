@@ -33,8 +33,8 @@
 * 3) we want to render a page with the template
     eg.
     a) $page.render($typeContent)  
-    // load the twig and give to him the array tag.
-    // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
+       // load the twig and give to him the array tag.
+       // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
 		 									
 								
 ## Entity "Mote"  is only a html content with an index name //maybe is not the best name (we shiould call obj or tag )
@@ -45,7 +45,8 @@
 ## Entity "Template" 
     $template["id"] primary  indexed
     $template["type"]= enum{xml, html ...}   primary  
-    $template["content-url or content-db"] // the information of the template'd saved or in a twig file or in the database.   
+    $template["content-url or content-db"] 
+    // the information of the template'd saved or in a twig file or in the database.   
    
 ## Entity "PageTemplate"
     $PageTemplate["template_id"] primary
@@ -54,8 +55,8 @@
    
 # TODO list (limit 0,2 is very long :) )
 * step0 
-  -> create the doctrine Entity
-  -> create the operation for page
-  -> test page
+    -> create the doctrine Entity
+    -> create the operation for page
+    -> test page
 * step1
-  -> add attributes to the page: author, father page, section
+    -> add attributes to the page: author, father page, section
