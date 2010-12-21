@@ -19,10 +19,11 @@
     $page[1]["tag"]["html"]["body"]=new array of Mote()  OneToMany
   
 note: in this document there are only the conceptual Classes
-      eg. the arrays "tag" and "html" will not be an Entity in the future for the mysql, maybe they'll become an operator, or maybe will be an object with mongoDB   
+      eg. the arrays "tag" and "html" will not be an Entity in the future for the mysql, maybe they'll become an operator  
 	  $page[1]["tag_html_attributes"]
 	  $page[1]["tag_html_motes"]=...
 	  $page[1]["tag_html_head_title"]=...
+      or maybe will remain an object with mongoDB 
  
 ##Operation:
 * 1) we want to take all the Html data stored in the array "tag"
