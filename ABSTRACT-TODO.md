@@ -37,7 +37,7 @@
           // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
 		 									
 								
-## Entity "Mote"  is only a html content with an index name //maybe is not the best name (we shiould call obj or tag )
+## Entity "Mote"  is only a html content with an index name //maybe is not the best name (we should call obj or tag )
     $tag["name"]    is a primary key in his page
     $tag["content"]="html data"
   
