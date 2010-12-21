@@ -19,7 +19,7 @@
     $page[1]["tag"]["html"]["body"]=new array of Mote()  OneToMany
   
 note: in this document there are only the conceptual Classes
-      eg. the arrays "tag" and "html" will not be an Entity in the future for the mysql, maybe they'll become an operator  
+      eg. the arrays "tag" and "html" will not be an Entity in the future for the mysql, maybe they'll become attributes  
 	  $page[1]["tag_html_attributes"]
 	  $page[1]["tag_html_motes"]=...
 	  $page[1]["tag_html_head_title"]=...
