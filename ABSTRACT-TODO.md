@@ -23,18 +23,18 @@
 * 2) we want to add/modified/remove certain mote from a page
     eg. 
     * a) $page.Insert("script","alert","alert('hi')") 
-       //add under ["tag"]["html"]["head"]["script"] the new mote called alert with the content alert('hi')
+         //add under ["tag"]["html"]["head"]["script"] the new mote called alert with the content alert('hi')
     * b) $page.Remove("script","alert") 
-       // remove the mote called "alert" 
+         // remove the mote called "alert" 
     * c) $page.Insert("title","title1","Web Site Title")  
-       //"title" is where to push, "title1" is the name identifier of the mote, "Web Site Title" is the content
+         //"title" is where to push, "title1" is the name identifier of the mote, "Web Site Title" is the content
        $page.AppendTo("title1","Section")   
-       //the result it'll be  "Web Site TitleSection"
+         //the result it'll be  "Web Site TitleSection"
 * 3) we want to render a page with the template
     eg. 
     * a) $page.render($typeContent)  
-       // load the twig and give to him the array tag.
-       // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
+         // load the twig and give to him the array tag.
+         // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
 		 									
 								
 ## Entity "Mote"  is only a html content with an index name //maybe is not the best name (we shiould call obj or tag )
