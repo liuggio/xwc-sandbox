@@ -20,7 +20,7 @@
   
 note: in this document there are only the conceptual Classed not the real one.
       eg. the array tag and html will not be an Entity in the future, maybe they'll become an operator   
-          $page[1]["tag_html_attributes"]
+	  $page[1]["tag_html_attributes"]
 	  $page[1]["tag_html_motes"]=...
 	  $page[1]["tag_html_head_title"]=...
  
