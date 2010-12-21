@@ -33,8 +33,8 @@
 * 3) we want to render a page with the template
     eg.
     a) $page.render($typeContent)  
-       // load the twig and give to him the array tag.
-       // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
+      // load the twig and give to him the array tag.
+      // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
 		 									
 								
 ## Entity "Mote"  is only a html content with an index name //maybe is not the best name (we shiould call obj or tag )
