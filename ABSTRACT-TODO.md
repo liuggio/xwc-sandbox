@@ -18,8 +18,8 @@
     $page[1]["tag"]["html"]["body"].attributes=new array of Mote() //addMote("attr1","onload..");addMote("attr1","onclose.."];)
     $page[1]["tag"]["html"]["body"]=new array of Mote()  OneToMany
   
-note: in this document there are only the conceptual Classed not the real one.
-      eg. the array tag and html will not be an Entity in the future, maybe they'll become an operator   
+note: in this document there are only the conceptual Classes
+      eg. the arrays "tag" and "html" will not be an Entity in the future for the mysql, maybe they'll become an operator, or maybe will be an object with mongoDB   
 	  $page[1]["tag_html_attributes"]
 	  $page[1]["tag_html_motes"]=...
 	  $page[1]["tag_html_head_title"]=...
