@@ -42,6 +42,7 @@ class AppKernel extends Kernel
             'Application'     => __DIR__.'/../src/Application',
             'Bundle'          => __DIR__.'/../src/Bundle',
             'Symfony\\Bundle' => __DIR__.'/../src/vendor/symfony/src/Symfony/Bundle',
+        	'Bundle\\TangentLabs' => __DIR__.'/../src/Bundle/TangentLabs',
         );
     }
 
