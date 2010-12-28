@@ -20,6 +20,7 @@ class Twig_Parser implements Twig_ParserInterface
     protected $blockStack;
     protected $macros;
     protected $env;
+    protected $reservedMacroNames;
 
     public function __construct(Twig_Environment $env)
     {
@@ -54,16 +55,16 @@ class Twig_Parser implements Twig_ParserInterface
 
         try {
             $body = $this->subparse(null);
+
+            if (null !== $this->parent) {
+                $this->checkBodyNodes($body);
+            }
         } catch (Twig_Error_Syntax $e) {
             if (null === $e->getFilename()) {
                 $e->setFilename($this->stream->getFilename());
             }
 
             throw $e;
-        }
-
-        if (null !== $this->parent) {
-            $this->checkBodyNodes($body);
         }
 
         $node = new Twig_Node_Module($body, $this->parent, new Twig_Node($this->blocks), new Twig_Node($this->macros), $this->stream->getFilename());
@@ -173,9 +174,21 @@ class Twig_Parser implements Twig_ParserInterface
         return isset($this->macros[$name]);
     }
 
-    public function setMacro($name, $value)
+    public function setMacro($name, Twig_Node_Macro $node)
     {
-        $this->macros[$name] = $value;
+        if (null === $this->reservedMacroNames) {
+            $this->reservedMacroNames = array();
+            $r = new ReflectionClass($this->env->getBaseTemplateClass());
+            foreach ($r->getMethods() as $method) {
+                $this->reservedMacroNames[] = $method->getName();
+            }
+        }
+
+        if (in_array($name, $this->reservedMacroNames)) {
+            throw new Twig_Error_Syntax(sprintf('"%s" cannot be used as a macro name as it is a reserved keyword', $name), $node->getLine());
+        }
+
+        $this->macros[$name] = $node;
     }
 
     public function getExpressionParser()
@@ -209,11 +222,11 @@ class Twig_Parser implements Twig_ParserInterface
         foreach ($body as $node)
         {
             if (
-                ($node instanceof Twig_Node_Text && !preg_match('/^\s*$/s', $node->getAttribute('data')))
+                ($node instanceof Twig_Node_Text && !ctype_space($node->getAttribute('data')))
                 ||
                 (!$node instanceof Twig_Node_Text && !$node instanceof Twig_Node_BlockReference && !$node instanceof Twig_Node_Import)
             ) {
-                throw new Twig_Error_Syntax(sprintf('A template that extends another one cannot have a body (%s).', $node), $node->getLine(), $this->stream->getFilename());
+                throw new Twig_Error_Syntax(sprintf('A template that extends another one cannot have a body (%s).', $node), $node->getLine());
             }
         }
     }

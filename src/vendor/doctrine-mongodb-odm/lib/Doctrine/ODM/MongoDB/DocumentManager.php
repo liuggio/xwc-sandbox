@@ -89,13 +89,6 @@ class DocumentManager
     private $eventManager;
 
     /**
-     * The Document hydrator instance.
-     *
-     * @var Doctrine\ODM\MongoDB\Hydrator
-     */
-    private $hydrator;
-
-    /**
      * The Hydrator factory instance.
      *
      * @var HydratorFactory
@@ -110,7 +103,14 @@ class DocumentManager
     private $schemaManager;
 
     /**
-     * Array of cached MongoCollection instances that are lazily loaded.
+     * Array of cached document database instances that are lazily loaded.
+     *
+     * @var array
+     */
+    private $documentDatabases = array();
+
+    /**
+     * Array of cached document collection instances that are lazily loaded.
      *
      * @var array
      */
@@ -153,19 +153,19 @@ class DocumentManager
             $this->metadataFactory->setCacheDriver($cacheDriver);
         }
 
-        $this->hydrator = new Hydrator($this, $this->eventManager, $this->cmd);
         $hydratorDir = $this->config->getHydratorDir();
         $hydratorNs = $this->config->getHydratorNamespace();
-        if ($hydratorDir && $hydratorNs) {
-            $this->hydratorFactory = new HydratorFactory($this, $hydratorDir, $hydratorNs, $this->config->getAutoGenerateHydratorClasses());
-            $this->hydrator->setHydratorFactory($this->hydratorFactory);
-        }
+        $this->hydratorFactory = new HydratorFactory(
+          $this,
+          $this->eventManager,
+          $hydratorDir,
+          $hydratorNs,
+          $this->config->getAutoGenerateHydratorClasses(),
+          $this->config->getMongoCmd()
+        );
 
-        $this->unitOfWork = new UnitOfWork($this, $this->eventManager, $this->hydrator, $this->cmd);
-        if ($this->hydratorFactory) {
-            $this->hydratorFactory->setUnitOfWork($this->unitOfWork);
-        }
-        $this->hydrator->setUnitOfWork($this->unitOfWork);
+        $this->unitOfWork = new UnitOfWork($this, $this->eventManager, $this->hydratorFactory, $this->cmd);
+        $this->hydratorFactory->setUnitOfWork($this->unitOfWork);
         $this->schemaManager = new SchemaManager($this, $this->metadataFactory);
         $this->proxyFactory = new ProxyFactory($this,
                 $this->config->getProxyDir(),
@@ -236,17 +236,6 @@ class DocumentManager
     }
 
     /**
-     * Gets the Hydrator used by the DocumentManager to hydrate document arrays
-     * to document objects.
-     *
-     * @return Doctrine\ODM\MongoDB\Hydrator
-     */
-    public function getHydrator()
-    {
-        return $this->hydrator;
-    }
-
-    /**
      * Gets the Hydrator factory used by the DocumentManager to generate and get hydrators
      * for each type of document.
      *
@@ -293,8 +282,20 @@ if (!$this->metadataFactory) throw new \Exception('No MetadataFactory.');
         $db = $db ? $db : $this->config->getDefaultDB();
         $db = $db ? $db : 'doctrine';
         $db = sprintf('%s%s', $this->config->getEnvironmentPrefix(), $db);
-        $database = $this->connection->selectDatabase($db);
-        return $database;
+        if ( ! isset($this->documentDatabases[$className])) {
+            $this->documentDatabases[$className] = $this->connection->selectDatabase($db);
+        }
+        return $this->documentDatabases[$className];
+    }
+
+    /**
+     * Gets the array of instantiated document database instances.
+     *
+     * @return array
+     */
+    public function getDocumentDatabases()
+    {
+        return $this->documentDatabases;
     }
 
     /**
@@ -314,12 +315,24 @@ if (!$this->metadataFactory) throw new \Exception('No MetadataFactory.');
         }
 
         $db = $this->getDocumentDatabase($className);
-        if ($metadata->isFile()) {
-            $collection = $db->getGridFS($collection);
-        } else {
-            $collection = $db->selectCollection($collection);
+        if ( ! isset($this->documentCollections[$className])) {
+            if ($metadata->isFile()) {
+                $this->documentCollections[$className] = $db->getGridFS($collection);
+            } else {
+                $this->documentCollections[$className] = $db->selectCollection($collection);
+            }
         }
-        return $collection;
+        return $this->documentCollections[$className];
+    }
+
+    /**
+     * Gets the array of instantiated document collection instances.
+     *
+     * @return array
+     */
+    public function getDocumentCollections()
+    {
+        return $this->documentCollections;
     }
 
     /**
@@ -624,6 +637,35 @@ if (!$this->metadataFactory) throw new \Exception('No MetadataFactory.');
         } else {
             return $mapping['targetDocument'];
         }
+    }
+
+    /**
+     * Returns a DBRef array for the supplied document.
+     *
+     * @param mixed $document A document object
+     * @param array $referenceMapping Mapping for the field the references the document
+     *
+     * @return array A DBRef array
+     */
+    public function createDBRef($document, array $referenceMapping = null)
+    {
+        $class = $this->getClassMetadata(get_class($document));
+        $id = $this->unitOfWork->getDocumentIdentifier($document);
+
+        $dbRef = array(
+            $this->cmd . 'ref' => $class->getCollection(),
+            $this->cmd . 'id'  => $class->getDatabaseIdentifierValue($id),
+            $this->cmd . 'db'  => $class->getDatabase()
+        );
+
+        // add a discriminator value if the referenced document is not mapped explicitely to a targetDocument
+        if ($referenceMapping && ! isset($referenceMapping['targetDocument'])) {
+            $discriminatorField = isset($referenceMapping['discriminatorField']) ? $referenceMapping['discriminatorField'] : '_doctrine_class_name';
+            $discriminatorValue = isset($referenceMapping['discriminatorMap']) ? array_search($class->getName(), $referenceMapping['discriminatorMap']) : $class->getName();
+            $dbRef[$discriminatorField] = $discriminatorValue;
+        }
+
+        return $dbRef;
     }
 
     /**

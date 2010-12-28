@@ -20,6 +20,7 @@
 namespace Doctrine\ODM\MongoDB\Query;
 
 use Doctrine\MongoDB\Cursor as BaseCursor;
+use Doctrine\MongoDB\LoggableCursor as BaseLoggableCursor;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
 use Doctrine\ODM\MongoDB\Cursor;
@@ -66,7 +67,7 @@ class Query extends \Doctrine\MongoDB\Query\Query
      */
     private $refresh = false;
 
-    public function __construct(DocumentManager $dm, ClassMetadata $class, Database $database, Collection $collection, array $query, array $options, $cmd, $hydrate, $refresh)
+    public function __construct(DocumentManager $dm, ClassMetadata $class, Database $database, Collection $collection, array $query = array(), array $options = array(), $cmd = '$', $hydrate = true, $refresh = false)
     {
         parent::__construct($database, $collection, $query, $options, $cmd);
         $this->dm      = $dm;
@@ -128,10 +129,7 @@ class Query extends \Doctrine\MongoDB\Query\Query
 
         // Convert the regular mongodb cursor to the odm cursor
         if ($results instanceof BaseCursor) {
-            $cursor = $results->getMongoCursor();
-            $results = new Cursor($cursor, $this->dm->getUnitOfWork(), $this->class);
-            $results->hydrate($this->hydrate);
-            $results->refresh($this->refresh);
+            $results = $this->wrapCursor($results);
         }
 
         $hints = array();
@@ -141,7 +139,7 @@ class Query extends \Doctrine\MongoDB\Query\Query
 
         // GeoLocationFindQuery just returns an instance of ArrayIterator so we have to
         // iterator over it and hydrate each object.
-        if ($this->query instanceof \Doctrine\MongoDB\Query\GeoLocationFindQuery && $this->hydrate) {
+        if ($this->query['type'] === self::TYPE_GEO_LOCATION && $this->hydrate) {
             foreach ($results as $key => $result) {
                 $document = $result['obj'];
                 if ($this->class->distance) {
@@ -158,5 +156,26 @@ class Query extends \Doctrine\MongoDB\Query\Query
         }
 
         return $results;
+    }
+
+    private function wrapCursor(BaseCursor $baseCursor)
+    {
+        $mongoCursor = $baseCursor->getMongoCursor();
+        if ($baseCursor instanceof BaseLoggableCursor) {
+            $cursor = new LoggableCursor(
+                $mongoCursor,
+                $this->dm->getUnitOfWork(),
+                $this->class,
+                $baseCursor->getLoggerCallable(),
+                $baseCursor->getQuery(),
+                $baseCursor->getFields()
+            );
+        } else {
+            $cursor = new Cursor($mongoCursor, $this->dm->getUnitOfWork(), $this->class);
+        }
+        $cursor->hydrate($this->hydrate);
+        $cursor->refresh($this->refresh);
+
+        return $cursor;
     }
 }

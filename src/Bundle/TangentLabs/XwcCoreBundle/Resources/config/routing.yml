@@ -1,3 +1,17 @@
-Core:
-    pattern:  /xwc
+CoreTestPage:
+    pattern:  /xwc/
     defaults: { _controller: TangentLabs\XwcCoreBundle:XwcCore:index }
+PageShow:
+    pattern:  /show/:route
+    defaults: { _controller: TangentLabs\XwcCoreBundle:Page:show }
+PageCreate:
+    pattern:  /new/:name
+    defaults: { _controller: TangentLabs\XwcCoreBundle:Page:create }    
+#Core:
+#pattern:  /xwc
+# defaults: { _controller: TangentLabs\XwcCoreBundle:XwcCore:index }
+
+#Page:
+#pattern:      /view/:page.:_format
+#defaults:     { _controller: TangentLabs\XwcCoreBundle:Page:show, _format: html }
+#requirements: { _format: (html|xml|json) }

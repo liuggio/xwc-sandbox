@@ -1,68 +1,59 @@
-# Abstract:
+#Abstract
+* This is the traduction (more or less) in pseudocode of the diagram class written in UML
 
-* This is the traduction(more or less) of the class diagrams in uml and pseudo code
-* i wrote(in hurry) the objects for a better understanding
+#Entity "Page"
+ * Description: this table content all the pages of the CMS 
+ * Attributes:
+  * id: primary key  
+  * name: string 
+  * route: string, indexed, slugified
+  * publishedAt: datetime()
+  * modifiedAt: datetime()
 
-# Entity "Page"
-    id is the primary key
-    $page[1]["name"]=string
-    $page[1]["route"]=slugified(string)   indexed //contain the symfony route for the page ex ww.com/page1
-    $page[1]["publishedAt"]= date()
-    $page[1]["template"]=new array of template() manyToMany Entity;   //to a page are associated many template 
-    $page[1]["tag"]["html"].attributes=new array of Mote() //eg.  addMote("attr1","xmlns=\"http://www.w3.org/1999/xhtml\""];)
-    $page[1]["tag"]["html"]["head"]=array()  //array of array of Mote
-    $page[1]["tag"]["html"]["head"]["script"]=new array of Mote()  OneToMany
-    $page[1]["tag"]["html"]["head"]["link"]=new array of Mote()  OneToMany
-    $page[1]["tag"]["html"]["head"]["title"]=new array of Mote()  OneToMany
-    $page[1]["tag"]["html"]["head"]["meta"]=new array of Mote()  OneToMany
-    $page[1]["tag"]["html"]["body"].attributes=new array of Mote() //addMote("attr1","onload..");addMote("attr1","onclose.."];)
-    $page[1]["tag"]["html"]["body"]=new array of Mote()  OneToMany
-  
-note: in this document there are only the conceptual Classes
-      eg. the arrays "tag" and "html" will not be an Entity in the future for the mysql, maybe they'll become attributes  
-	  $page[1]["tag_html_attributes"]
-	  $page[1]["tag_html_motes"]=...
-	  $page[1]["tag_html_head_title"]=...
-      or maybe will remain an object with mongoDB 
- 
-##Operation:
-* 1) we want to take all the Html data stored in the array "tag"
-* 2) we want to add/modified/remove certain mote from a page
-    eg. 
-    * a) $page.Insert("script","alert","alert('hi')") 
-          //add under ["tag"]["html"]["head"]["script"] the new mote called alert with the content alert('hi')
-    * b) $page.Remove("script","alert") 
-          // remove the mote called "alert" 
-    * c) $page.Insert("title","title1","Web Site Title")  
-          //"title" is where to push, "title1" is the name identifier of the mote, "Web Site Title" is the content
-       $page.AppendTo("title1","Section")   
-          //the result it'll be  "Web Site TitleSection"
-* 3) we want to render a page with the template
-    eg. 
-    * a) $page.render($typeContent)  
-          // load the twig and give to him the array tag.
-          // $typeContent is the type of the template we want xml, html, js maybe there are more template associated to a page
-		 									
-								
-## Entity "Mote"  is only a html content with an index name 
+#Entity "Mote"
+ * Description: is a simple content of data (now only html)
+ * Attributes
+  * name: primary key, string 
+  * content: clob
+  * tag_name: string, oneToMany with Tag, indexed
+  * publishedAt: datetime()
 
-    $tag["name"]    is a primary key in his page
-    $tag["content"]="html data"
-  maybe is not the best name any other idea for the name (we'd call obj or tag ) 
-    
-## Entity "Template" 
-    $template["id"] primary  indexed
-    $template["type"]= enum{xml, html ...}   primary  
-    $template["content-url or content-db"] 
-    // the information of the template'd saved or in a twig file or in the database.   
-   
+#Entity "Tag"
+ * Description: this table content all the information about the allowed tags. is possibile from a leaf reach the root.
+ * Attributes
+  * name: primary key, string
+  * parent: string, manyToOne
+  * order: integer
+
+#Association Class "PageMote"
+ * PageMote-Attributes
+  * page_id
+  * mote_name
+
+#Operations
+
+ 1. $page=new Page("Page name", "RouteName")
+ 2. $page->getMotesByTag()
      
+      return all the motes grouped by tag owned by that page;
+      a twig template will organize the content;
+      @return array of array eg.  ["tags'name"]=array of motes
+
+ 3. $mote= new Mote("Name", "HtmlContent", "tagname")
+
+     eg. $mote("title01", "HomePage", "html_head_title")
+     $page->addMote($mote)
+     $page->removeMote($mote)
+     $page->appentContentToMote("Name","htmlContent")
+
    
-# TODO list (limit 0,2 is very long :) )
-* step0
-  * clean this file ( formatting, adding ideas, entities, corrections, comments)
-  * creation of the doctrine Entities  
-  * create the operation for page
+# TODO list limit 0,2
+1. Start-up
+  * clean this file (formatting and adding: ideas, entities, corrections, comments)  
+  * create the doctrine ORM Entities for the Page/Mote/Tag
+  * create the operations of the page
   * create a test page
-* step1
-  * add attributes to the page: author, father page, section
+  * add onpreUpdate modify page.modifiedAt with now()
+  * add fixtures in doctrine2 for tag element (now only sql)
+  * add template entity
+2. add attributes to the page: author, father page, sections, users etc..
