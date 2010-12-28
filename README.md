@@ -36,19 +36,19 @@ with this sandbox.
     php app/console doctrine:schema:create
 6. load fixtures via sql  
 		  
-      INSERT INTO Tag ( name , parent_name , tag_order) VALUES
-      ('html', NULL , '0'),
-			('html_attributes', 'html', 0),
-			('html_body', 'html', 20),
-			('html_body_footer', 'html_body', 100),
-			('html_body_header', 'html_body', 25),
-			('html_head', 'html', 10),
-			('html_head_link', 'html_head', 12),
-			('html_head_meta', 'html_head', 11),
-			('html_head_script', 'html_head', 13),
-			('html_head_title', 'html_head', 12);
+        INSERT INTO Tag ( name , parent_name , tag_order) VALUES
+        ('html', NULL , '0'),
+			  ('html_attributes', 'html', 0),
+			  ('html_body', 'html', 20),
+			  ('html_body_footer', 'html_body', 100),
+			  ('html_body_header', 'html_body', 25),
+			  ('html_head', 'html', 10),
+			  ('html_head_link', 'html_head', 12),
+			  ('html_head_meta', 'html_head', 11),
+			  ('html_head_script', 'html_head', 13),
+			  ('html_head_title', 'html_head', 12);
 
-7. go to "http://WEBSERVER/xwc_sandbox/web/app_dev.php/show/firstpagePAGE=NAME"
+7. go to "http://WEBSERVER/xwc_sandbox/web/app_dev.php/show/PAGE°NAME"
 
 ## Recommendation on YML / PHP / XML configuration
 
