@@ -51,7 +51,7 @@
  * Start-up
    * clean this file (formatting and adding: ideas, entities, corrections, comments)  
    * create the doctrine ORM Entities for the Page/Mote/Tag
-   * create the operations of the page
+   * create the operations
    * create a test page
    * add onpreUpdate modify page.modifiedAt with now()
    * add fixtures in doctrine2 for tag element (now only sql)
