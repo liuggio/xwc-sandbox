@@ -44,7 +44,7 @@
      eg. $mote("title01", "HomePage", "html_head_title")
      $page->addMote($mote)
      $page->removeMote($mote)
-     $page->appentContentToMote("Name","htmlContent")
+     $page->appentToMote("Name","htmlContent")
 
    
 # TODO list limit 0,2

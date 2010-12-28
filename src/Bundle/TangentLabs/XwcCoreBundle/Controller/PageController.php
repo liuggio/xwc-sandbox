@@ -16,13 +16,15 @@ class PageController extends Controller
     	$mote[]=new mote("Script","//javascript","html_head_script");
     	$mote[]=new mote("Body","First Content","html_body");
     	$mote[]=new mote("Body2","and first page","html_body");
-
+		$mote[]=new mote("Body21","AIAIAIAIAAIAIAIAIAIAIAI","html_body");
+		
     	foreach($mote as $oneM)
     	{	$page->addMotes($oneM);
     	}
-    	 
+    	$page->appendToMote("Title", "XWC", " | ");
+    	$page->removeMote("Body21");
+    	
     	return $this->render('TangentLabs\XwcCoreBundle:Page:show.twig',array("page"=>$page,"motesByTag"=>$page->getMotesByTag()));
-  
     }
     public function createAction($name)
     {   

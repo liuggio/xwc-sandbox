@@ -33,6 +33,12 @@ class Mote
      		  
      	$this->pages = new \Doctrine\Common\Collections\ArrayCollection();
     }
+    
+    public function __toString()
+	{
+		return $this->getContent();
+	}
+    
     /**
      * Get name
      *
@@ -61,6 +67,17 @@ class Mote
     public function getContent()
     {
         return $this->content;
+    }
+    
+    /**
+     * Append a string to content
+     * @param $string
+     * @param $delimiter
+     * @return string $content
+     */
+    public function appendToContent($string, $delimiter=" ")
+    {
+         $this->content .= $delimiter.$string;
     }
 
     /**

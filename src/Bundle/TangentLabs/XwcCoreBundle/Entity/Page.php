@@ -110,7 +110,7 @@ class Page
      * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $motes
      */
     public function addMotes(\Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $motes)
-    {   $this->motes[]=$motes;    	
+    {   $this->motes[$motes->getName()]=$motes;    	
     }
 
     /**
@@ -135,5 +135,49 @@ class Page
     	}
     	
         return $motesByTag;
+    }
+    
+    /**
+     * Get motes order and listed by Tag names
+     * @param $motename the name of the mote (is the pk)
+     * @param $string
+     * @param $delimiter
+     * 
+     * @return boolean
+     */
+    public function appendToMote($motename, $string, $delimiter=" ")
+    {  
+    	if (isset($this->motes[$motename])) //we cannot use in_array this->motes is an object
+    	{    $this->motes[$motename]->appendToContent($string, $delimiter);
+    		 return true;    		  
+    	}else 
+    		 return false;
+    }
+    /**
+     * Get ONE mote
+     * @param $motename the name of the mote (is the pk)
+     * 
+     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $mote or false
+     */
+    public function getMote($motename)
+    {  
+    	if (isset($this->motes[$motename])) //we cannot use in_array this->motes is an object
+    	{    return $this->motes[$motename];        		  
+    	}else 
+    		 return false;
+    }
+    /**
+     * remove ONE mote
+     * @param $motename the name of the mote (is the pk)
+     * 
+     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $mote or false
+     */
+    public function removeMote($motename)
+    {  
+    	if (isset($this->motes[$motename])) //we cannot use in_array this->motes is an object
+    	{	unset($this->motes[$motename]);    		
+    		return true;       		  
+    	}else 
+    		 return false;
     }
 }

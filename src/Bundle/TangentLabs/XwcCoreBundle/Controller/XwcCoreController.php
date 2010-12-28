@@ -15,11 +15,7 @@ class XwcCoreController extends Controller
     {   
     	//should check db connection
     	//log file
-    	    	
     	return $this->render('TangentLabs\XwcCoreBundle:Core:layout.twig');
-    	
-    
-    	
     }
     
 }
