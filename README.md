@@ -23,11 +23,11 @@ with this sandbox.
 3. Set dbal connection and orm in app/config/config.yml
 
 		doctrine.dbal:
-      host:     localhost
-      dbname:   xwc_sandbox
-      user:     root
-      password: root
-    doctrine.orm: ~
+          host:     localhost
+          dbname:   xwc_sandbox
+          user:     root
+          password: root
+        doctrine.orm: ~
 4. create database
 
     php app/console doctrine:database:create
