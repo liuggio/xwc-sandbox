@@ -1,0 +1,35 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html {% block html_attributes %}lang="en"{% endblock %}>
+<head>
+  {% block head %}
+  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="stylesheet" href="style.css" />
+    <title>{% block title %}
+    {% for key in motesByTag["html_head_title"] %}
+		{{key.getContent}}
+	{% endfor %} 
+    {% endblock %}</title>
+    <script>
+    {% block script %}
+		{% for key in motesByTag["html_head_script"] %}
+			{{key.getContent}}
+		{% endfor %} 
+    {% endblock %}
+    </script>
+  {% endblock %}
+</head>
+<body> 
+{% block body %}
+  <h1>{{page.name}}</h1>
+  <a href="{{ path('PageShow', { 'route': page.name }) }}">link to page via route "{{page.route}}"</a>
+  
+{% for key in motesByTag["html_body"] %}
+	{{key.getContent}}
+{% endfor %} 
+   
+  {% block footer %}
+    <div id="footer"></div>
+  {% endblock footer %}
+{% endblock body %}
+</body>
+</html>

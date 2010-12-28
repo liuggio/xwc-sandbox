@@ -1,0 +1,123 @@
+Mote:
+  connection: doctrine
+  tableName: mote
+  columns:
+    name:
+      type: string(50)
+      fixed: false
+      unsigned: false
+      primary: true
+      autoincrement: false
+    content:
+      type: string(255)
+      fixed: false
+      unsigned: false
+      primary: false
+      notnull: true
+      autoincrement: false
+  relations:
+    PagesMotesTagpath:
+      local: name
+      foreign: mode_name
+      type: many
+Page:
+  connection: doctrine
+  tableName: page
+  columns:
+    id:
+      type: integer(4)
+      fixed: false
+      unsigned: false
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+      fixed: false
+      unsigned: false
+      primary: false
+      notnull: true
+      autoincrement: false
+    route:
+      type: string(50)
+      fixed: false
+      unsigned: false
+      primary: false
+      notnull: true
+      autoincrement: false
+    publishedat:
+      type: timestamp(25)
+      fixed: false
+      unsigned: false
+      primary: false
+      notnull: true
+      autoincrement: false
+  relations:
+    PagesMotesTagpath:
+      local: id
+      foreign: page_id
+      type: many
+PagesMotesTagpath:
+  connection: doctrine
+  tableName: pages_motes_tagpath
+  columns:
+    page_id:
+      type: integer(4)
+      fixed: false
+      unsigned: false
+      primary: true
+      autoincrement: false
+    mode_name:
+      type: string(50)
+      fixed: false
+      unsigned: false
+      primary: true
+      autoincrement: false
+    tagpath_name:
+      type: string(255)
+      fixed: false
+      unsigned: false
+      primary: true
+      autoincrement: false
+  relations:
+    Page:
+      local: page_id
+      foreign: id
+      type: one
+    Mote:
+      local: mode_name
+      foreign: name
+      type: one
+    TagPath:
+      local: tagpath_name
+      foreign: name
+      type: one
+TagPath:
+  connection: doctrine
+  tableName: tagpath
+  columns:
+    name:
+      type: string(255)
+      fixed: false
+      unsigned: false
+      primary: true
+      autoincrement: false
+    parent_name:
+      type: string(255)
+      fixed: false
+      unsigned: false
+      primary: false
+      default: ''
+      notnull: true
+      autoincrement: false
+    tagpath_order:
+      type: integer(4)
+      fixed: false
+      unsigned: false
+      primary: false
+      notnull: true
+      autoincrement: false
+  relations:
+    PagesMotesTagpath:
+      local: name
+      foreign: tagpath_name
+      type: many
