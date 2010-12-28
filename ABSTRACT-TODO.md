@@ -56,5 +56,6 @@
    * add onpreUpdate modify page.modifiedAt with now()
    * add fixtures in doctrine2 for tag element (now only sql)
    * add template entity
+   * choose a license to apply
  * Add attributes to the page: author, father page, sections, users etc..
 
