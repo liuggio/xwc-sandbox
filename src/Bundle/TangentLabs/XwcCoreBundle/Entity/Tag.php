@@ -17,12 +17,13 @@ class Tag
 	protected $tag_order;
     
      
-     public function __construct($name=false,$parent_name=false,$type_tag=false)
+     public function __construct($name=false,$parent_name=false,$tag_order=0)
      {  if ($name!==false)
      		$this->name=$name;
   		if ($parent_name!==false)
      		$this->setParentName($parent_name);
-     			
+     	 
+     	$this->setTagOrder($tag_order);     			
      	$this->children = new \Doctrine\Common\Collections\ArrayCollection();
      }  
 	
@@ -75,5 +76,26 @@ class Tag
     public function getParentName()
     {
         return $this->parent_name;
+    }
+    
+    
+ 	/**
+     * Set tag_order
+     *
+     * @param integer $tag_order
+     */
+    public function setTagOrder($tag_order)
+    {
+        $this->tag_order = $tag_order;
+    }
+    
+    /**
+     * Get tag_order
+     *
+     * @return integer tag_order
+     */
+    public function getTagOrder()
+    {
+        return $this->tag_order;
     }
 }

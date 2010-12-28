@@ -18,7 +18,7 @@ twig.config:
 ## Doctrine Configuration
 doctrine.dbal:
     host:     localhost
-    dbname:   xwc2_sandbox
+    dbname:   xwc_sandbox
     user:     root
     password: root
 doctrine.orm: ~

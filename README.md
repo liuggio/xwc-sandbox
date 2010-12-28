@@ -34,10 +34,14 @@ with this sandbox.
 5. create table on database
 
     php app/console doctrine:schema:create
-6. load fixtures via sql  
-		  
-        INSERT INTO Tag ( name , parent_name , tag_order) VALUES
-        ('html', NULL , '0'),
+6. load fixtures via doctrine (modify your absolute path
+   * First method
+   
+     php app/console doctrine:data:load 
+   * Standard method	  
+              
+              INSERT INTO Tag ( name , parent_name , tag_order) VALUES
+              ('html', NULL , '0'),
 			  ('html_attributes', 'html', 0),
 			  ('html_body', 'html', 20),
 			  ('html_body_footer', 'html_body', 100),

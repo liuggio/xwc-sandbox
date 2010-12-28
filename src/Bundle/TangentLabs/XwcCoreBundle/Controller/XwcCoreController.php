@@ -3,7 +3,7 @@
 namespace Bundle\TangentLabs\XwcCoreBundle\Controller;
 use  Bundle\TangentLabs\XwcCoreBundle\Entity\Page;
 use  Bundle\TangentLabs\XwcCoreBundle\Entity\Mote;
-use  Bundle\TangentLabs\XwcCoreBundle\Entity\TagPath;
+use  Bundle\TangentLabs\XwcCoreBundle\Entity\Tag;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 class XwcCoreController extends Controller
