@@ -1,10 +1,10 @@
 <?php
 
 namespace Bundle\TangentLabs\XwcCoreBundle\DataFixtures\ORM;
-
+use Bundle\TangentLabs\XwcCoreBundle\Entity\Page;
+use Bundle\TangentLabs\XwcCoreBundle\Entity\Mote;
 use Bundle\TangentLabs\XwcCoreBundle\Entity\Tag;
 use Doctrine\Common\DataFixtures\FixtureInterface;
-
 
 class TagData implements FixtureInterface
 {
@@ -31,5 +31,15 @@ class TagData implements FixtureInterface
 		$manager->persist($html_head_title);
 		$manager->persist($html_head_link);
 		$manager->persist($html_head_script);
+		
+		$homepage=new page("HomePage");
+		
+		$body=new Mote("body","Welcome to the homepage", $html_body);
+		
+		$homepage->addMotes($body);
+		
+		$manager->persist($body);
+		$manager->persist($homepage);
+		
     }
 }

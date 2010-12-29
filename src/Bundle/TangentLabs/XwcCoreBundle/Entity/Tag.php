@@ -1,16 +1,19 @@
 <?
 namespace Bundle\TangentLabs\XwcCoreBundle\Entity;
+
+//removed children and parent association
+
 /** @orm:Entity */
-class Tag
+class Tag 
 {
 	/** @orm:Id
      *  @orm:Column(type="string", length="255") */
     private $name;
-	/** @orm:OneToMany(targetEntity="Tag", mappedBy="parent")
+	/** ¤orm:OneToMany(targetEntity="Tag", mappedBy="parent")
      */
     private $children;
-    /** @orm:ManyToOne(targetEntity="Tag", inversedBy="children")
-     *  @orm:JoinColumn(name="parent_name", referencedColumnName="name")
+    /** ¤orm:ManyToOne(targetEntity="Tag", inversedBy="children")
+     *  ¤orm:JoinColumn(name="parent_name", referencedColumnName="name")
      */
     private $parent_name;
 	/** @orm:Column(type="integer") */
@@ -26,7 +29,11 @@ class Tag
      	$this->setTagOrder($tag_order);     			
      	$this->children = new \Doctrine\Common\Collections\ArrayCollection();
      }  
-	
+  	
+    public function __toString()
+	{
+		return $this->getName();
+	}
     /**
      * Get name
      *

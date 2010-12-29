@@ -1,7 +1,9 @@
 <?
 namespace Bundle\TangentLabs\XwcCoreBundle\Entity;
 use Bundle\TangentLabs\XwcCoreBundle\Util\Inflector;
-/** @orm:Entity 
+ 
+/** @orm:Entity(repositoryClass="Bundle\TangentLabs\XwcCoreBundle\Entity\PageRepository")
+ *  @orm:HasLifecycleCallbacks 
  * */
 class Page
 {
@@ -12,7 +14,9 @@ class Page
     /** @orm:Column(type="string", length=50, unique=true, nullable=false) @orm:Index */
     private $route;
     /** @orm:Column(type="datetime") @orm:Index */
-    protected $publishedAt;  
+    protected $publishedAt;
+    /** @orm:Column(type="datetime") */
+    protected $updatedAt = null;
 	 /**
      * @orm:ManyToMany(targetEntity="Mote", inversedBy="pages")
      * @orm:JoinTable(name="pages_motes",
@@ -33,8 +37,8 @@ class Page
     	elseif ($route===false && $name!==false)
     		$this->setRoute($name);// if the route is false, but not the name, we slugify the name
 		$this->motes = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->updatedAt = $this->publishedAt = new \DateTime();
 		 
-		$this->publishedAt = new \DateTime();
     }
     
     /**
@@ -67,7 +71,7 @@ class Page
     /**
      * Set name
      *
-     * @param string $name
+     * @param string $nameRepositoryInterface
      */
     public function setName($name)
     {
@@ -109,8 +113,9 @@ class Page
      *
      * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $motes
      */
-    public function addMotes(\Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $motes)
-    {   $this->motes[$motes->getName()]=$motes;    	
+    public function addMotes(Mote $mote)
+    {   //$this->motes[]=$motes;  
+    	$this->motes[$mote->getName()]=$mote;   	
     }
 
     /**
@@ -124,14 +129,39 @@ class Page
     }
     
     /**
+     * getUpdatedAt 
+     * 
+     * @return \DateTime
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * Set the updated date
+     *
+     * @return null
+     **/
+    public function setUpdatedAt(\DateTime $updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
+    }
+    
+    /** @PreUpdate */
+    public function markAsUpdated()
+    {
+        $this->updatedAt = new \DateTime();
+    }
+ /**
      * Get motes order and listed by Tag names
      *
      * @return Doctrine\Common\Collections\Collection $motes
      */
     public function getMotesByTag()
-    {    
+    {   $motesByTag=  array();
     	foreach($this->motes as $k)
-    	{	$motesByTag[$k->getTag()][]=$k;
+    	{	$motesByTag[$k->getTag()->getName()][]=$k;
     	}
     	
         return $motesByTag;
@@ -148,9 +178,9 @@ class Page
     public function appendToMote($motename, $string, $delimiter=" ")
     {  
     	if (isset($this->motes[$motename])) //we cannot use in_array this->motes is an object
-    	{    $this->motes[$motename]->appendToContent($string, $delimiter);
-    		 return true;    		  
-    	}else 
+    	{   $this->motes[$motename]->appendToContent($string, $delimiter);
+    		return true;    		  
+    	}else
     		 return false;
     }
     /**
@@ -172,10 +202,13 @@ class Page
      * 
      * @return Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $mote or false
      */
-    public function removeMote($motename)
+    public function removeMote(Mote $motename)
     {  
-    	if (isset($this->motes[$motename])) //we cannot use in_array this->motes is an object
-    	{	unset($this->motes[$motename]);    		
+    	if (isset($this->motes[$motename->getName()])) //we cannot use in_array this->motes is an object
+    	{	//#TODO clean remove the element (both ways)
+    		//$this->motes->removeElement($comment);
+        	//$motes->removePage($this);
+    		unset($this->motes[$motename]);    		
     		return true;       		  
     	}else 
     		 return false;

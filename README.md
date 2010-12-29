@@ -37,7 +37,10 @@ with this sandbox.
 6. load fixtures via doctrine
    
      php app/console doctrine:data:load 
-7. go to "http://WEBSERVER/xwc_sandbox/web/app_dev.php/show/PAGE°NAME"
+ 7. generate the proxies for the entities
+     
+     php app/console doctrine:generate:proxies    
+8. go to "http://WEBSERVER/xwc_sandbox/web/app_dev.php/show/homepage"
 
 ## Recommendation on YML / PHP / XML configuration
 
