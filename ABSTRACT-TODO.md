@@ -1,17 +1,15 @@
 #Abstract
 * This is the traduction (more or less) in pseudocode of the diagram class written in UML
-    A "Page" has a lot of content (called "Mote").
-    A "Mote" is positioned in a "Tag", and a "Mote" is associated with a "Content".
-    The "Mote" can have multiple types of "Content": html, text, content created by a bundle. 
-    The types of content can be extended.
-    A "Page" has a "Template".
-    Each "Content" has a "Template". 
-    The "Template" can be a twig file or a twig content stored into db.
-
-
-The page has a template that will contain all the motes of the page (sorted by tag)
-
-The template
+    
+      A "Page" has a lot of content (called "Mote").
+      A "Mote" is positioned in a "Tag", and a "Mote" is associated with a "Content".
+      The "Mote" can have multiple types of "Content": html, text, content created by a bundle. 
+      The types of content can be extended.
+      A "Page" has a "Template".
+      Each "Content" has a "Template". 
+      The "Template" can be a twig file or a twig content stored into db.
+      The page has a template that will contain all the motes' content (sorted by tag).
+ 
 #Entity "Page"
  * Description: this table content all the pages of the CMS 
  * Attributes:
