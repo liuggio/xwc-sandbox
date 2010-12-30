@@ -59,13 +59,14 @@
    
 # TODO list limit 0,2
  1. Start-up (Resolved)
-   * -clean this file (formatting and adding: ideas, entities, corrections, comments)  
-   * +create the doctrine ORM Entities for the Page/Mote/Tag
-   * +create the operations
-   * +create a test page
-   * +add onpreUpdate modify page.modifiedAt with now
-   * +add MoteContent Entity
-   * +add fixtures in doctrine2 for tag element
+    
+    * -clean this file (formatting and adding: ideas, entities, corrections, comments)  
+    * +create the doctrine ORM Entities for the Page/Mote/Tag
+    * +create the operations
+    * +create a test page
+    * +add onpreUpdate modify page.modifiedAt with now
+    * +add MoteContent Entity
+    * +add fixtures in doctrine2 for tag element
  2. Add Template Entities and show the content of the page
  3. Unit Test for 1.and 2.
  3. Add entities and page's attributes: Template, author of the page, parent of the page, users, permissions, ajax, etc..
