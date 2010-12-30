@@ -67,7 +67,7 @@
     * +add onpreUpdate modify page.modifiedAt with now
     * +add MoteContent Entity
     * +add fixtures in doctrine2 for tag element
- 2. Add Template Entities and show the content of the page
+ 2. Add Template Entities and develop operation for showing the content of all of the templates' types (file and database template)
  3. Unit Test for 1.and 2.
  3. Add entities and page's attributes: Template, author of the page, parent of the page, users, permissions, ajax, etc..
  4. License
