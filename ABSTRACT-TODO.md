@@ -57,7 +57,7 @@
    
 4. We want to add a template to the page, to a single mote. 
    
-# TODO list limit 0,2
+# TODO list limit 0,4
  1. Start-up (Resolved)
     
     * -clean this file (formatting and adding: ideas, entities, corrections, comments)  
