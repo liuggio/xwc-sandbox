@@ -1,6 +1,5 @@
 #Abstract
 * This is the traduction (more or less) in pseudocode of the diagram class written in UML
-====
     A "Page" has a lot of content (called "Mote").
     A "Mote" is positioned in a "Tag", and a "Mote" is associated with a "Content".
     The "Mote" can have multiple types of "Content": html, text, content created by a bundle. 
