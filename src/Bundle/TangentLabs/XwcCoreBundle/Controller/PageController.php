@@ -12,7 +12,7 @@ class PageController extends Controller
     {   
     	$em = $this->get('doctrine.orm.entity_manager'); 
     	$page = $em->getRepository('Bundle\TangentLabs\XwcCoreBundle\Entity\Page')
-						->findOneBy(array("route"=>$route));
+					->findOneBy(array("route"=>$route));
 		if (!$page)
 		{   // DIE WITH ERROR #TODO 	
 		}else
