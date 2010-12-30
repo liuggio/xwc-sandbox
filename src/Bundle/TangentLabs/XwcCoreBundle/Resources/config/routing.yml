@@ -4,6 +4,9 @@ CoreTestPage:
 PageShow:
     pattern:  /show/:route
     defaults: { _controller: TangentLabs\XwcCoreBundle:Page:show }
+PageEdit:
+    pattern:  /edit/:route
+    defaults: { _controller: TangentLabs\XwcCoreBundle:Page:edit } 
 #PageCreate:
 #    pattern:  /new/:name
 #    defaults: { _controller: TangentLabs\XwcCoreBundle:Page:create }    

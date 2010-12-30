@@ -7,7 +7,7 @@
     <title>{% block title %}
     		{% if motesByTag["html_head_title"] is defined %}
 			{% for key in motesByTag["html_head_title"] %}
-				{{key.getContent}}
+				{{key.getMoteContent}}
 			{% endfor %}
 		{% endif %}
     {% endblock %}</title>
@@ -15,7 +15,7 @@
     {% block script %}
 		{% if motesByTag["html_head_script"] is defined %}
 			{% for key in motesByTag["html_head_script"] %}
-				{{key.getContent}}
+				{{key.getMoteContent}}
 			{% endfor %}
 		{% endif %}
     {% endblock %}
@@ -24,18 +24,42 @@
 </head>
 <body> 
 {% block body %}
+
+    
+    {% if motesByTag["html_body_header"] is defined %}
+	<div id="header">
+		{% for key in motesByTag["html_body_header"] %}
+			{{key.getMoteContent}}
+		{% endfor %}
+	 </div>
+	{% endif %}
+   
+
+
   <h1>{{page.name}}</h1>
-  <a href="{{ path('PageShow', { 'route': page.name }) }}">link to page via route "{{page.route}}"</a>
-  
+  you are in "{{page.route}}"
+ links:
+  <ul>
+    <li><a href="{{ path('PageShow', { 'route': 'homepage' }) }}">"HOME PAGE"</a></li>
+    <li><a href="{{ path('PageShow', { 'route': 'firstpage' }) }}">"FIRST PAGE"</a></li>
+    <li><a href="{{ path('PageEdit', { 'route': 'homepage' }) }}">add content to "HOME PAGE"</a></li>
+    <li><a href="{{ path('PageEdit', { 'route': 'firstpage' }) }}">add content to "FIRST PAGE"</a></li>
+  </ul> 
 	{% if motesByTag["html_body"] is defined %}
 		{% for key in motesByTag["html_body"] %}
-			{{key.getContent}}
+			{{key.getMoteContent}}
 		{% endfor %}
 	{% endif %}
 
    
   {% block footer %}
-    <div id="footer"></div>
+    <div id="footer">
+    {% if motesByTag["html_body_footer"] is defined %}
+		{% for key in motesByTag["html_body_footer"] %}
+			{{key.getMoteContent}}
+		{% endfor %}
+	{% endif %}
+    </div>
   {% endblock footer %}
 {% endblock body %}
 </body>

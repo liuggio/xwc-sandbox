@@ -29,7 +29,7 @@ class Page
 	private $html;
 	
 
-	 public function __construct($name=false,$route=false)
+	 public function __construct($name=false, $route=false)
     {   if ($name!==false)
     		$this->setName($name);
     	if ($route!==false)
@@ -37,8 +37,7 @@ class Page
     	elseif ($route===false && $name!==false)
     		$this->setRoute($name);// if the route is false, but not the name, we slugify the name
 		$this->motes = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->updatedAt = $this->publishedAt = new \DateTime();
-		 
+		$this->updatedAt = $this->publishedAt = new \DateTime();	 
     }
     
     /**
@@ -212,5 +211,24 @@ class Page
     		return true;       		  
     	}else 
     		 return false;
+    }
+    /**
+     * Set publishedAt
+     *
+     * @param datetime $publishedAt
+     */
+    public function setPublishedAt($publishedAt)
+    {
+        $this->publishedAt = $publishedAt;
+    }
+
+    /**
+     * Get publishedAt
+     *
+     * @return datetime $publishedAt
+     */
+    public function getPublishedAt()
+    {
+        return $this->publishedAt;
     }
 }

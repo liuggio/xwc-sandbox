@@ -9,24 +9,26 @@ class Mote
 	/** @orm:Entity  
      *  @orm:ManyToMany(targetEntity="Page", mappedBy="motes") */
     private $pages;
-    /** @orm:Column(type="string", nullable=false)
-     *  #TODO should be clob (may I define "clob" in doctrine2.0 ??)  */
-    private $content;   
 	/** Many-To-One - Unidirectional
      *  @orm:ManyToOne(targetEntity="Tag")
-     *  @orm:JoinColumn(name="tag_id", referencedColumnName="name") 
+     *  @orm:JoinColumn(name="tag_name", referencedColumnName="name") 
      *  #TODO NOT NULL
-     *  */   
+     */   
     private $tag;    
+ 	/** Many-To-One - Unidirectional
+     *  @orm:ManyToOne(targetEntity="MoteContent")
+     *  @orm:JoinColumn(name="content_name", referencedColumnName="name")
+     */   
+    private $mote_content;    
+       
     
-    
- 	public function __construct($name=false,$content=false,$tag=false)
+ 	public function __construct($name=false, $content=false, $tag=false)
      {
      	if ($name !== false)
      		$this->name=$name;
      	
         if ($content !== false)
-     		$this->content=$content;
+     		$this->setMoteContent($content);
      	
      	if ($tag !== false)
      		  $this->setTag($tag);
@@ -36,7 +38,7 @@ class Mote
     
     public function __toString()
 	{
-		return $this->getContent();
+		//return $this->getContent();
 	}
     
     /**
@@ -49,35 +51,17 @@ class Mote
         return $this->name;
     }
 
-    /**
-     * Set content
-     *
-     * @param string $content
-     */
-    public function setContent($content)
-    {
-        $this->content = $content;
-    }
-
-    /**
-     * Get content
-     *
-     * @return string $content
-     */
-    public function getContent()
-    {
-        return $this->content;
-    }
     
     /**
-     * Append a string to content
+     * Append a string to MoteContent
+     * is a shortcut for $this->mote_content->appendToContent
      * @param $string
      * @param $delimiter
      * @return string $content
      */
-    public function appendToContent($string, $delimiter=" ")
+     public function appendToContent($string, $delimiter=" ")
     {
-         $this->content .= $delimiter.$string;
+         $this->mote_content->appendToContent($string, $delimiter);
     }
 
     /**
@@ -119,4 +103,36 @@ class Mote
     {
         return $this->tag;
     }
+    /**
+     * Set the MoteContent associated
+     *
+     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\MoteContent $content
+     */
+    public function setMoteContent(\Bundle\TangentLabs\XwcCoreBundle\Entity\MoteContent $motecontent)
+    {
+        $this->mote_content = $motecontent;
+    }
+
+     /**
+     * Get the MoteContent associated
+     *
+     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\MoteContent $content
+     */
+    public function getMoteContent()
+    {
+        return $this->mote_content;
+    }
+   
+ 
+
+     /**
+     * Get the MoteContent->getContent associated
+     *
+     * @return string $content
+     */
+    public function getContent()
+    {
+        return $this->mote_content->getContent();
+    }    
+    
 }

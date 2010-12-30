@@ -1,26 +1,25 @@
 <?
 namespace Bundle\TangentLabs\XwcCoreBundle\Entity;
-
 //removed children and parent association
-
 /** @orm:Entity */
+/* one Tag can be associated to more Motes */
 class Tag 
 {
 	/** @orm:Id
      *  @orm:Column(type="string", length="255") */
     private $name;
-	/** ¤orm:OneToMany(targetEntity="Tag", mappedBy="parent")
+	/** ï¿½orm:OneToMany(targetEntity="Tag", mappedBy="parent")
      */
     private $children;
-    /** ¤orm:ManyToOne(targetEntity="Tag", inversedBy="children")
-     *  ¤orm:JoinColumn(name="parent_name", referencedColumnName="name")
+    /** ï¿½orm:ManyToOne(targetEntity="Tag", inversedBy="children")
+     *  ï¿½orm:JoinColumn(name="parent_name", referencedColumnName="name")
      */
     private $parent_name;
 	/** @orm:Column(type="integer") */
 	protected $tag_order;
     
      
-     public function __construct($name=false,$parent_name=false,$tag_order=0)
+     public function __construct($name=false, $parent_name=false, $tag_order=0)
      {  if ($name!==false)
      		$this->name=$name;
   		if ($parent_name!==false)
