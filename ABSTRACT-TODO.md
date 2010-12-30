@@ -23,7 +23,7 @@
  * Description: is a simple content of data (now only html)
  * Attributes
    * name: primary key, string 
-   * content: clob
+   * motecontent_name: string, oneToMany with MoteContent
    * tag_name: string, oneToMany with Tag, indexed
    * publishedAt: datetime()
 
@@ -33,6 +33,13 @@
    * name: primary key, string
    * parent: string, manyToOne
    * order: integer
+
+#Entity "MoteContent"
+ * Attributes
+   * name: primary key, string
+   * type: enum (doctrine2 doesn't has enum field so is a string for doctrine2)
+   * content: Clob
+   * parameter: string
 
 #Association Class "PageMote"
  * PageMote-Attributes
