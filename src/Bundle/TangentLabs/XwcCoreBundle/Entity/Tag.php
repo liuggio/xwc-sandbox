@@ -1,32 +1,31 @@
 <?
 namespace Bundle\TangentLabs\XwcCoreBundle\Entity;
-//removed children and parent association
+//removed children and parent association (see #)
 /** @orm:Entity */
-/* one Tag can be associated to more Motes */
 class Tag 
 {
 	/** @orm:Id
      *  @orm:Column(type="string", length="255") */
     private $name;
-	/** �orm:OneToMany(targetEntity="Tag", mappedBy="parent")
+	/** #orm:OneToMany(targetEntity="Tag", mappedBy="parent")
      */
     private $children;
-    /** �orm:ManyToOne(targetEntity="Tag", inversedBy="children")
-     *  �orm:JoinColumn(name="parent_name", referencedColumnName="name")
+    /** #orm:ManyToOne(targetEntity="Tag", inversedBy="children")
+     *  #orm:JoinColumn(name="parentName", referencedColumnName="name")
      */
-    private $parent_name;
+    private $parentName;
 	/** @orm:Column(type="integer") */
-	protected $tag_order;
+	private $tagOrder;
     
      
-     public function __construct($name=false, $parent_name=false, $tag_order=0)
-     {  if ($name!==false)
-     		$this->name=$name;
-  		if ($parent_name!==false)
-     		$this->setParentName($parent_name);
+     public function __construct($name=false, $parentName=false, $tagOrder=0)
+     {  if ($name !== false)
+     		$this->name = $name;
+  		if ($parentName !== false)
+     		$this->setParentName($parentName);
      	 
-     	$this->setTagOrder($tag_order);     			
-     	$this->children = new \Doctrine\Common\Collections\ArrayCollection();
+     	$this->setTagOrder($tagOrder);     			
+     	// # $this->children = new \Doctrine\Common\Collections\ArrayCollection();
      }  
   	
     public function __toString()
@@ -81,7 +80,7 @@ class Tag
      */
     public function getParentName()
     {
-        return $this->parent_name;
+        return $this->parentName;
     }
     
     
@@ -90,9 +89,9 @@ class Tag
      *
      * @param integer $tag_order
      */
-    public function setTagOrder($tag_order)
+    public function setTagOrder($tagOrder)
     {
-        $this->tag_order = $tag_order;
+        $this->tagOrder = $tagOrder;
     }
     
     /**
@@ -102,6 +101,6 @@ class Tag
      */
     public function getTagOrder()
     {
-        return $this->tag_order;
+        return $this->tagOrder;
     }
 }

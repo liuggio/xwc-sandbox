@@ -7,7 +7,7 @@
     <title>{% block title %}
     		{% if motesByTag["html_head_title"] is defined %}
 			{% for key in motesByTag["html_head_title"] %}
-				{{key.getMoteContent}}
+				{{key.getContent()}}
 			{% endfor %}
 		{% endif %}
     {% endblock %}</title>
@@ -15,7 +15,7 @@
     {% block script %}
 		{% if motesByTag["html_head_script"] is defined %}
 			{% for key in motesByTag["html_head_script"] %}
-				{{key.getMoteContent}}
+				{{key.getContent()}}
 			{% endfor %}
 		{% endif %}
     {% endblock %}
@@ -29,12 +29,10 @@
     {% if motesByTag["html_body_header"] is defined %}
 	<div id="header">
 		{% for key in motesByTag["html_body_header"] %}
-			{{key.getMoteContent}}
+				{{key.getContent()}}
 		{% endfor %}
 	 </div>
 	{% endif %}
-   
-
 
   <h1>{{page.name}}</h1>
   you are in "{{page.route}}"
@@ -42,12 +40,10 @@
   <ul>
     <li><a href="{{ path('PageShow', { 'route': 'homepage' }) }}">"HOME PAGE"</a></li>
     <li><a href="{{ path('PageShow', { 'route': 'firstpage' }) }}">"FIRST PAGE"</a></li>
-    <li><a href="{{ path('PageEdit', { 'route': 'homepage' }) }}">add content to "HOME PAGE"</a></li>
-    <li><a href="{{ path('PageEdit', { 'route': 'firstpage' }) }}">add content to "FIRST PAGE"</a></li>
   </ul> 
 	{% if motesByTag["html_body"] is defined %}
 		{% for key in motesByTag["html_body"] %}
-			{{key.getMoteContent}}
+				{{key.getContent()}}
 		{% endfor %}
 	{% endif %}
 
@@ -56,7 +52,7 @@
     <div id="footer">
     {% if motesByTag["html_body_footer"] is defined %}
 		{% for key in motesByTag["html_body_footer"] %}
-			{{key.getMoteContent}}
+				{{key.getContent()}}
 		{% endfor %}
 	{% endif %}
     </div>

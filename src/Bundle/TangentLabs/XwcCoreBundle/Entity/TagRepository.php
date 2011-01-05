@@ -8,6 +8,4 @@ use Symfony\Components\Validator\Mapping\ClassMetadata;
 
 class TagRepository  extends EntityRepository
 {
-   
 }
- 

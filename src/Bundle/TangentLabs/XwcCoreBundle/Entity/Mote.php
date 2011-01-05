@@ -1,46 +1,40 @@
 <?
 namespace Bundle\TangentLabs\XwcCoreBundle\Entity;
 /** @orm:Entity */
-class Mote
+/* one MoteContent can be associated to more Motes */
+
+class Mote 
 {
+	const TYPE_HTML="html";
+	const TYPE_TEXT="text";
+	const TYPE_DEFAULT="text";
 	/** @orm:Id
      *  @orm:Column(type="string", length="50") */
     private $name;
-	/** @orm:Entity  
-     *  @orm:ManyToMany(targetEntity="Page", mappedBy="motes") */
-    private $pages;
-	/** Many-To-One - Unidirectional
-     *  @orm:ManyToOne(targetEntity="Tag")
-     *  @orm:JoinColumn(name="tag_name", referencedColumnName="name") 
-     *  #TODO NOT NULL
-     */   
-    private $tag;    
- 	/** Many-To-One - Unidirectional
-     *  @orm:ManyToOne(targetEntity="MoteContent")
-     *  @orm:JoinColumn(name="content_name", referencedColumnName="name")
-     */   
-    private $mote_content;    
-       
+	/** @orm:Column(type="text") */
+	private $content;
+    /** @orm:Column(name="type", type="string", columnDefinition="enum('html', 'text')", nullable="false") */
+    private $type;	
+    /** @orm:OneToMany(targetEntity="PageJoinMote", mappedBy="mote") */
+    private $joinPages;
     
- 	public function __construct($name=false, $content=false, $tag=false)
-     {
-     	if ($name !== false)
-     		$this->name=$name;
-     	
-        if ($content !== false)
-     		$this->setMoteContent($content);
-     	
-     	if ($tag !== false)
-     		  $this->setTag($tag);
-     		  
-     	$this->pages = new \Doctrine\Common\Collections\ArrayCollection();
-    }
-    
-    public function __toString()
+    public function __construct($name=false, $content=false,  $type=false)
 	{
-		//return $this->getContent();
+    	if ($name!==false)
+     		$this->name=$name;
+     	else 
+    		$this->name="Content-".rand();
+     		
+  		if ($content!==false)
+     		$this->setContent($content);
+     		
+  		$this->setType($type);
+	}  
+  	
+	public function __toString()
+	{	return $this->getContent();
 	}
-    
+	 
     /**
      * Get name
      *
@@ -51,88 +45,87 @@ class Mote
         return $this->name;
     }
 
-    
     /**
-     * Append a string to MoteContent
-     * is a shortcut for $this->mote_content->appendToContent
+     * Set content
+     *
+     * @param text $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * Get content
+     *
+     * @return text $content
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     */    
+    public function setType($type=false)
+    {	if (($type==self::TYPE_HTML) || ($type==self::TYPE_TEXT) )
+	 	{	$this->type=$type;
+	 	}else
+	 		$this->type=self::TYPE_DEFAULT;
+    }
+
+    /**
+     * Get type
+     *
+     * @return string $type
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Append a string to  Content
+     * 
      * @param $string
      * @param $delimiter
      * @return string $content
      */
      public function appendToContent($string, $delimiter=" ")
-    {
-         $this->mote_content->appendToContent($string, $delimiter);
-    }
-
+     {
+     	$this->setContent($this->getContent().$delimiter.$string);
+     }
     /**
-     * Add pages
-     *
-     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Page $pages
-     */
-    public function addPages(\Bundle\TangentLabs\XwcCoreBundle\Entity\Page $pages)
-    {
-        $this->pages[] = $pages;
-    }
-
-    /**
-     * Get pages
-     *
-     * @return Doctrine\Common\Collections\Collection $pages
-     */
-    public function getPages()
-    {
-        return $this->pages;
-    }
-
-    /**
-     * Set tag
-     *
-     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Tag $tag
-     */
-    public function setTag($tag)
-    {
-        $this->tag = $tag;
-    }
-
-    /**
-     * Get tag
-     *
-     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\Tag $tag
-     */
-    public function getTag()
-    {
-        return $this->tag;
-    }
-    /**
-     * Set the MoteContent associated
-     *
-     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\MoteContent $content
-     */
-    public function setMoteContent(\Bundle\TangentLabs\XwcCoreBundle\Entity\MoteContent $motecontent)
-    {
-        $this->mote_content = $motecontent;
-    }
-
-     /**
-     * Get the MoteContent associated
-     *
-     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\MoteContent $content
-     */
-    public function getMoteContent()
-    {
-        return $this->mote_content;
-    }
-   
- 
-
-     /**
-     * Get the MoteContent->getContent associated
-     *
+     * Prepend a string to  Content
+     * 
+     * @param $string
+     * @param $delimiter
      * @return string $content
      */
-    public function getContent()
+     public function prependToContent($string, $delimiter=" ")
+     {
+     	$this->setContent($string.$delimiter.$this->getContent());
+     }
+    /**
+     * Add joinPages
+     *
+     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\PageJoinMote $joinPages
+     */
+    public function addJoinPages(\Bundle\TangentLabs\XwcCoreBundle\Entity\PageJoinMote $joinPages)
     {
-        return $this->mote_content->getContent();
-    }    
-    
+        $this->joinPages[] = $joinPages;
+    }
+
+    /**
+     * Get joinPages
+     *
+     * @return Doctrine\Common\Collections\Collection $joinPages
+     */
+    public function getjoinPages()
+    {
+        return $this->joinPages;
+    }
 }

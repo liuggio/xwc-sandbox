@@ -7,86 +7,37 @@ use Bundle\TangentLabs\XwcCoreBundle\Util\Inflector;
  * */
 class Page
 {
-    /** @orm:Id @orm:Column(type="integer") @orm:GeneratedValue(strategy="IDENTITY") */
-    private $id;
-    /** @orm:Column(type="string") */
+	/** @orm:Id
+     *  @orm:Column(type="string", length="50") */
     private $name;
-    /** @orm:Column(type="string", length=50, unique=true, nullable=false) @orm:Index */
+    /** @orm:Column(type="string", length=50, unique=true, nullable="false") @orm:Index */
     private $route;
     /** @orm:Column(type="datetime") @orm:Index */
-    protected $publishedAt;
+    private $publishedAt;
     /** @orm:Column(type="datetime") */
-    protected $updatedAt = null;
-	 /**
-     * @orm:ManyToMany(targetEntity="Mote", inversedBy="pages")
-     * @orm:JoinTable(name="pages_motes",
-     *      joinColumns={@orm:JoinColumn(name="page_id", referencedColumnName="id")},
-     *      inverseJoinColumns={@orm:JoinColumn(name="mode_name", referencedColumnName="name")}
-     *      )
-     */
-	private $motes;
-	/** not for orm or db */
-	private $html;
+    private $updatedAt = null;
+    /** @orm:OneToMany(targetEntity="PageJoinMote", mappedBy="page") 
+     *  @orm:OrderBy({"tagOrder" = "ASC"})*/
+    private $joinMotes;
+    /** @orm:OneToMany(targetEntity="PageJoinWidget", mappedBy="page") 
+     *  @orm:OrderBy({"tagOrder" = "ASC"})*/
+    private $joinWidgets;
+ 	/** not for orm */
+	private $motesByTag;
 	
 
-	 public function __construct($name=false, $route=false)
-    {   if ($name!==false)
-    		$this->setName($name);
+	public function __construct($name = false, $route = false)
+    {   if ($name !== false)
+    		$this->name=$name;
+    		
     	if ($route!==false)
     		$this->setRoute($route);
-    	elseif ($route===false && $name!==false)
+    	elseif ($route === false && $name !== false)
     		$this->setRoute($name);// if the route is false, but not the name, we slugify the name
-		$this->motes = new \Doctrine\Common\Collections\ArrayCollection();
+		
 		$this->updatedAt = $this->publishedAt = new \DateTime();	 
     }
     
-    /**
-     * Clean the name of the route
-     * 
-     * @param string $text
-     * @param string $default
-     * @return string or false
-     */
-    public function slugify($text)
-    {
-        $text = strtolower($text);
-        $text = preg_replace('/[^a-z0-9]/', '-', $text);
-        $text = preg_replace('/-+/', '-', $text);
-        $text = trim($text, '-');
-		
-        return $text ? $text : false;
-    }
-	
-    /**
-     * Get id
-     *
-     * @return integer $id
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $nameRepositoryInterface
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string $name
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
     /**
      * Set route
      *
@@ -105,120 +56,32 @@ class Page
     public function getRoute()
     {
         return $this->route;
-    }
-
-    /**
-     * Add motes
-     *
-     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $motes
-     */
-    public function addMotes(Mote $mote)
-    {   //$this->motes[]=$motes;  
-    	$this->motes[$mote->getName()]=$mote;   	
-    }
-
-    /**
-     * Get motes order and listed by names
-     *
-     * @return Doctrine\Common\Collections\Collection $motes
-     */
-    public function getMotes()
-    {
-        return $this->motes;
-    }
+    } 
     
-    /**
-     * getUpdatedAt 
-     * 
-     * @return \DateTime
-     */
-    public function getUpdatedAt()
-    {
-        return $this->updatedAt;
-    }
-
-    /**
-     * Set the updated date
-     *
-     * @return null
-     **/
-    public function setUpdatedAt(\DateTime $updatedAt)
-    {
-        $this->updatedAt = $updatedAt;
-    }
-    
-    /** @PreUpdate */
+    /** @orm:PreUpdate */
     public function markAsUpdated()
     {
         $this->updatedAt = new \DateTime();
     }
- /**
-     * Get motes order and listed by Tag names
+ 
+    /**
+     * Get name
      *
-     * @return Doctrine\Common\Collections\Collection $motes
+     * @return string $name
      */
-    public function getMotesByTag()
-    {   $motesByTag=  array();
-    	foreach($this->motes as $k)
-    	{	$motesByTag[$k->getTag()->getName()][]=$k;
-    	}
-    	
-        return $motesByTag;
+    public function getName()
+    {
+        return $this->name;
     }
-    
-    /**
-     * Get motes order and listed by Tag names
-     * @param $motename the name of the mote (is the pk)
-     * @param $string
-     * @param $delimiter
-     * 
-     * @return boolean
-     */
-    public function appendToMote($motename, $string, $delimiter=" ")
-    {  
-    	if (isset($this->motes[$motename])) //we cannot use in_array this->motes is an object
-    	{   $this->motes[$motename]->appendToContent($string, $delimiter);
-    		return true;    		  
-    	}else
-    		 return false;
-    }
-    /**
-     * Get ONE mote
-     * @param $motename the name of the mote (is the pk)
-     * 
-     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $mote or false
-     */
-    public function getMote($motename)
-    {  
-    	if (isset($this->motes[$motename])) //we cannot use in_array this->motes is an object
-    	{    return $this->motes[$motename];        		  
-    	}else 
-    		 return false;
-    }
-    /**
-     * remove ONE mote
-     * @param $motename the name of the mote (is the pk)
-     * 
-     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $mote or false
-     */
-    public function removeMote(Mote $motename)
-    {  
-    	if (isset($this->motes[$motename->getName()])) //we cannot use in_array this->motes is an object
-    	{	//#TODO clean remove the element (both ways)
-    		//$this->motes->removeElement($comment);
-        	//$motes->removePage($this);
-    		unset($this->motes[$motename]);    		
-    		return true;       		  
-    	}else 
-    		 return false;
-    }
+
     /**
      * Set publishedAt
      *
      * @param datetime $publishedAt
      */
-    public function setPublishedAt($publishedAt)
-    {
+    public function setPublishedAt($publishedAt=false)
+    {	if ($publishedAt===false)
+    		$publishedAt=new \DateTime();	
         $this->publishedAt = $publishedAt;
     }
 
@@ -230,5 +93,105 @@ class Page
     public function getPublishedAt()
     {
         return $this->publishedAt;
+    }
+
+    /**
+     * Set updatedAt
+     *
+     * @param datetime $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {	if ($updatedAt===false)
+    		$updatedAt=new \DateTime();
+        $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * Get updatedAt
+     *
+     * @return datetime $updatedAt
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+   
+    /**
+     * Add joinMotes
+     *
+     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\PageJoinMote $joinMotes
+     */
+    public function addJoinMotes(\Bundle\TangentLabs\XwcCoreBundle\Entity\PageJoinMote $joinMotes)
+    {	
+        $this->joinMotes[] = $joinMotes;
+    }  
+ 
+    /**
+     * Create a joinMotes and associates it
+     *
+     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Mote $aMote
+     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Tag $aTag
+     * @param integer $tagOrder
+     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\PageJoinMote $tmp
+     */
+    public function createJoinMotes($aMote, $aTag, $tagOrder=false)
+    {	$tmp= new PageJoinMote($this, $aMote, $aTag, $tagOrder);
+    	$this->joinMotes[] = $tmp;
+    	return $tmp;
+    }
+    /**
+     * Create an array of tags, each item contains some motes
+     *
+     * @return array $this->motesByTag
+     */  
+    public function motesOrderedByTag()
+    {   unset($this->motesByTag);
+    	$this->motesByTag= array();
+    	foreach($this->joinMotes as $v)
+    	{	$this->motesByTag[$v->getTag()->getName()][] = $v->getMote();
+    	}
+    	return $this->motesByTag;
+    }
+
+    /**
+     * Get joinMotes
+     *
+     * @return Doctrine\Common\Collections\Collection $joinMotes
+     */
+    public function getJoinMotes()
+    {
+        return $this->joinMotes;
+    }
+
+    /**
+     * Add joinWidgets
+     *
+     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\PageJoinWidget $joinWidgets
+     */
+    public function addJoinWidgets(\Bundle\TangentLabs\XwcCoreBundle\Entity\PageJoinWidget $joinWidgets)
+    {
+        $this->joinWidgets[] = $joinWidgets;
+    }
+    /**
+     * Create a joinWidgets and associates it
+     *
+     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Widget $awidget
+     * @param Bundle\TangentLabs\XwcCoreBundle\Entity\Tag $aTag
+     * @param integer $tagOrder
+     * @return Bundle\TangentLabs\XwcCoreBundle\Entity\PageJoinMote $tmp
+     */
+    public function createJoinWidgets($awidget, $aTag, $tagOrder=false, $parameter=false)
+    {	$tmp= new PageJoinWidget($this, $awidget, $aTag, $tagOrder, $parameter);
+    	$this->joinWidgets[] = $tmp;
+    	return $tmp;
+    }
+    /**
+     * Get joinWidgets
+     *
+     * @return Doctrine\Common\Collections\Collection $joinWidgets
+     */
+    public function getJoinWidgets()
+    {
+        return $this->joinWidgets;
     }
 }
