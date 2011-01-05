@@ -37,7 +37,7 @@
 
 #Association Class "PageJoinMote" implemented like an Entity
  * is an implementation of ManyToMany between Page and Mote, however, 
-between the two entities have add the association class with extra columns and Tag tagOrder. 
+between the two entities have add the association class with extra columns: Tag, tagOrder. 
 Tag indicates where Mote will have to be positiones and tagOrder indicates the order in its group tag.
    * page: Page
    * mote: Mote
@@ -54,7 +54,7 @@ A Widget is a class that is included in a particular folder, is possible to exec
    * status: integer
 
 #Association Class "PageJoinWidget" implemented like an Entity
- * is an implementation of ManyToMany between Page and Widget, however, between the two entities have add the association class with extra parameters and Tag, tagOrder, parameter.
+ * is an implementation of ManyToMany between Page and Widget, however, between the two entities have add the association class with extra optional column: Tag, tagOrder, parameter.
    * page: Page
    * widget: Widget
    * tag: Tag (optional)
@@ -63,19 +63,19 @@ A Widget is a class that is included in a particular folder, is possible to exec
       
 # TODO list limit 0,2
  1. + Start-up (Resolved)
-   * - clean this file (formatting and adding: ideas, entities, corrections, comments)  
-   * + create the doctrine ORM Entities for the Page/Mote/Tag
-   * + create the operations
-   * + create a test page
-   * + add onpreUpdate modify page.modifiedAt with now()
-   * + add fixtures in doctrine2 for tag element
+   * -clean this file (formatting and adding: ideas, entities, corrections, comments)  
+   * +create the doctrine ORM Entities for the Page/Mote/Tag
+   * +create the operations
+   * +create a test page
+   * +add onpreUpdate modify page.modifiedAt with now()
+   * +add fixtures in doctrine2 for tag element
  2. Widget
-   * + add Entities and Association
-   * - create the method for load the class and the correct Widgetfunction
-   * - create a Widget's Example
+   * +add Entities and Association
+   * -create the method for load the class and the correct Widgetfunction
+   * -create a Widget's Example
  3. Template/Theme
-   * - create Template Entity
-   * - create a Theme entity
+   * -create Template Entity
+   * -create a Theme entity
  4. Unit Test for 1., 2., 3.
  5. Add entities and page's attributes: author of the page, parent of the page, users, permissions, ajax, etc..
  6. License
