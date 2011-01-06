@@ -2,7 +2,8 @@
 <html {% block html_attributes %}lang="en"{% endblock %}>
 <head>
   {% block head %}
-  	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  	
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" href="style.css" />
     <title>{% block title %}
     		{% if motesByTag["html_head_title"] is defined %}
@@ -40,6 +41,8 @@
   <ul>
     <li><a href="{{ path('PageShow', { 'route': 'homepage' }) }}">"HOME PAGE"</a></li>
     <li><a href="{{ path('PageShow', { 'route': 'firstpage' }) }}">"FIRST PAGE"</a></li>
+     <li><a href="{{ path('PageEdit', { 'route': 'homepage' }) }}">add content to "HOME PAGE"</a></li>
+    <li><a href="{{ path('PageEdit', { 'route': 'firstpage' }) }}">add content to "FIRST PAGE"</a></li>
   </ul> 
 	{% if motesByTag["html_body"] is defined %}
 		{% for key in motesByTag["html_body"] %}

@@ -88,13 +88,13 @@ class Mote
     }
 
     /**
-     * Append a string to  Content
+     * Append a string to Content
      * 
      * @param $string
      * @param $delimiter
      * @return string $content
      */
-     public function appendToContent($string, $delimiter=" ")
+     public function appendTo($string, $delimiter=" ")
      {
      	$this->setContent($this->getContent().$delimiter.$string);
      }
@@ -105,7 +105,7 @@ class Mote
      * @param $delimiter
      * @return string $content
      */
-     public function prependToContent($string, $delimiter=" ")
+     public function prependTo($string, $delimiter=" ")
      {
      	$this->setContent($string.$delimiter.$this->getContent());
      }

@@ -25,7 +25,6 @@ class AppKernel extends Kernel
             //new Symfony\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle(),
             //new Symfony\Bundle\DoctrineMongoDBBundle\DoctrineMongoDBBundle(),
             new Bundle\TangentLabs\XwcCoreBundle\XwcCoreBundle(),
-
         );
 
         if ($this->isDebug()) {
@@ -41,7 +40,7 @@ class AppKernel extends Kernel
             'Application'     => __DIR__.'/../src/Application',
             'Bundle'          => __DIR__.'/../src/Bundle',
             'Symfony\\Bundle' => __DIR__.'/../src/vendor/symfony/src/Symfony/Bundle',
-	        	'Bundle\\TangentLabs' => __DIR__.'/../src/Bundle/TangentLabs',
+	        'Bundle\\TangentLabs' => __DIR__.'/../src/Bundle/TangentLabs',
         );
     }
 
