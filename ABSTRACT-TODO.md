@@ -45,8 +45,8 @@ Tag indicates where Mote will have to be positiones and tagOrder indicates the o
    * tagOrder: integer
 
 #Entity "Widget"
- * Description: the Widget is a tool that allows you to add dynamic content to the page.
-A Widget takes one input some parameter and a position as a Tag, but the Widget being dynamic can access all the motes in all sections of the page.
+ * Description: the Widget is a tool that allows you to add dynamic content to the page (a widget is a bundle)
+A Widget takes in input some parameters and a position as a Tag, but the Widget being dynamic can access to all motes in all sections of the page.
 A Widget is a class that is included in a particular folder, is possible to execute different functions of the class with the GET / POST 
  * Attributes
    * name: primary key, string
