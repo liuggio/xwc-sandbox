@@ -1,0 +1,3 @@
+show:
+    pattern:  /show/:route
+    defaults: { _controller: XwcCoreBundle:XwcCore:index }
