@@ -144,7 +144,6 @@ abstract class AbstractDoctrineExtensionTest extends TestCase
         $definition = $container->getDefinition('doctrine.orm.default_entity_manager');
         $this->assertEquals('%doctrine.orm.entity_manager_class%', $definition->getClass());
         $this->assertEquals('create', $definition->getFactoryMethod());
-        $this->assertArrayHasKey('doctrine.orm.entity_manager', $definition->getTags());
 
         $arguments = $definition->getArguments();
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arguments[0]);
@@ -183,7 +182,6 @@ abstract class AbstractDoctrineExtensionTest extends TestCase
         $definition = $container->getDefinition('doctrine.orm.default_entity_manager');
         $this->assertEquals('%doctrine.orm.entity_manager_class%', $definition->getClass());
         $this->assertEquals('create', $definition->getFactoryMethod());
-        $this->assertArrayHasKey('doctrine.orm.entity_manager', $definition->getTags());
 
         $arguments = $definition->getArguments();
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arguments[0]);
@@ -218,7 +216,6 @@ abstract class AbstractDoctrineExtensionTest extends TestCase
         $definition = $container->getDefinition('doctrine.orm.default_entity_manager');
         $this->assertEquals('%doctrine.orm.entity_manager_class%', $definition->getClass());
         $this->assertEquals('create', $definition->getFactoryMethod());
-        $this->assertArrayHasKey('doctrine.orm.entity_manager', $definition->getTags());
 
         $arguments = $definition->getArguments();
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arguments[0]);
@@ -250,7 +247,6 @@ abstract class AbstractDoctrineExtensionTest extends TestCase
         $definition = $container->getDefinition('doctrine.orm.default_entity_manager');
         $this->assertEquals('%doctrine.orm.entity_manager_class%', $definition->getClass());
         $this->assertEquals('create', $definition->getFactoryMethod());
-        $this->assertArrayHasKey('doctrine.orm.entity_manager', $definition->getTags());
 
         $arguments = $definition->getArguments();
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arguments[0]);
@@ -284,7 +280,6 @@ abstract class AbstractDoctrineExtensionTest extends TestCase
         $definition = $container->getDefinition('doctrine.orm.dm1_entity_manager');
         $this->assertEquals('%doctrine.orm.entity_manager_class%', $definition->getClass());
         $this->assertEquals('create', $definition->getFactoryMethod());
-        $this->assertArrayHasKey('doctrine.orm.entity_manager', $definition->getTags());
 
         $arguments = $definition->getArguments();
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arguments[0]);
@@ -305,7 +300,6 @@ abstract class AbstractDoctrineExtensionTest extends TestCase
         $definition = $container->getDefinition('doctrine.orm.dm2_entity_manager');
         $this->assertEquals('%doctrine.orm.entity_manager_class%', $definition->getClass());
         $this->assertEquals('create', $definition->getFactoryMethod());
-        $this->assertArrayHasKey('doctrine.orm.entity_manager', $definition->getTags());
 
         $arguments = $definition->getArguments();
         $this->assertInstanceOf('Symfony\Component\DependencyInjection\Reference', $arguments[0]);

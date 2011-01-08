@@ -32,7 +32,7 @@ class LoaderResolver extends BaseLoaderResolver
      * Constructor.
      *
      * @param ContainerInterface $container A ContainerInterface instance
-     * @param array              $loaders   An array of LoaderInterface instances to add
+     * @param LoaderInterface[]  $loaders An array of loaders
      */
     public function __construct(ContainerInterface $container, array $loaders = array())
     {
@@ -48,11 +48,10 @@ class LoaderResolver extends BaseLoaderResolver
      * Returns a loader able to load the resource.
      *
      * @param mixed  $resource A resource
-     * @param string $type     The resource type
      *
      * @return LoaderInterface A LoaderInterface instance
      */
-    public function resolve($resource, $type = null)
+    public function resolve($resource)
     {
         if (count($this->services)) {
             while ($id = array_shift($this->services)) {
@@ -60,6 +59,6 @@ class LoaderResolver extends BaseLoaderResolver
             }
         }
 
-        return parent::resolve($resource, $type);
+        return parent::resolve($resource);
     }
 }

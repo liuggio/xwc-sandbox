@@ -41,33 +41,31 @@ abstract class Loader implements LoaderInterface
     }
 
     /**
-     * Adds routes from a resource.
+     * Adds definitions and parameters from a resource.
      *
-     * @param mixed  $resource A Resource
-     * @param string $type     The resource type
+     * @param mixed $resource A Resource
      */
-    public function import($resource, $type = null)
+    public function import($resource)
     {
-        $this->resolve($resource, $type)->load($resource);
+        $this->resolve($resource)->load($resource);
     }
 
     /**
      * Finds a loader able to load an imported resource
      *
-     * @param mixed  $resource A Resource
-     * @param string $type     The resource type
+     * @param mixed $resource A Resource
      *
      * @return LoaderInterface A LoaderInterface instance
      *
      * @throws \InvalidArgumentException if no loader is found
      */
-    public function resolve($resource, $type = null)
+    public function resolve($resource)
     {
         $loader = false;
-        if ($this->supports($resource, $type)) {
+        if ($this->supports($resource)) {
             $loader = $this;
         } elseif (null !== $this->resolver) {
-            $loader = $this->resolver->resolve($resource, $type);
+            $loader = $this->resolver->resolve($resource);
         }
 
         if (false === $loader) {

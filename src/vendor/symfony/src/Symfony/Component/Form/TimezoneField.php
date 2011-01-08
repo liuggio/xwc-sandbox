@@ -38,7 +38,7 @@ class TimezoneField extends ChoiceField
     {
         $data = parent::getDisplayedData();
 
-        if (null == $data && $this->isRequired()) {
+        if ($data == null && $this->isRequired()) {
             $data = date_default_timezone_get();
         }
 

@@ -121,7 +121,7 @@ class RequestMatcher implements RequestMatcherInterface
             }
         } else {
             $address = $this->ip;
-            $netmask = 32;
+            $netmask = 1;
         }
 
         return 0 === substr_compare(sprintf('%032b', ip2long($ip)), sprintf('%032b', ip2long($address)), 0, $netmask);

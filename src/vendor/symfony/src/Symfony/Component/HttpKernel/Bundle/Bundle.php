@@ -19,7 +19,7 @@ use Symfony\Component\Finder\Finder;
 
 /**
  * An implementation of the BundleInterface that follows a few conventions
- * for the DependencyInjection extensions and the Console commands.
+ * for the DependencyInjection extensions and the Console commands. 
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
  */
@@ -113,7 +113,7 @@ abstract class Bundle extends ContainerAware implements BundleInterface
     public function registerExtensions(ContainerBuilder $container)
     {
         if (!$dir = realpath($this->getPath().'/DependencyInjection')) {
-            return;
+            return array();
         }
 
         $finder = new Finder();
@@ -121,9 +121,11 @@ abstract class Bundle extends ContainerAware implements BundleInterface
 
         $prefix = $this->namespacePrefix.'\\'.$this->name.'\\DependencyInjection';
         foreach ($finder as $file) {
-            $class = $prefix.strtr($file->getPath(), array($dir => '', '/' => '\\')).'\\'.$file->getBasename('.php');
+            $class = $prefix.strtr($file->getPath(), array($dir => '', '/' => '\\')).'\\'.basename($file, '.php');
 
-            $container->registerExtension(new $class());
+            if ('Extension' === substr($class, -9)) {
+                $container->registerExtension(new $class());
+            }
         }
     }
 
@@ -148,7 +150,7 @@ abstract class Bundle extends ContainerAware implements BundleInterface
 
         $prefix = $this->namespacePrefix.'\\'.$this->name.'\\Command';
         foreach ($finder as $file) {
-            $r = new \ReflectionClass($prefix.strtr($file->getPath(), array($dir => '', '/' => '\\')).'\\'.$file->getBasename('.php'));
+            $r = new \ReflectionClass($prefix.strtr($file->getPath(), array($dir => '', '/' => '\\')).'\\'.basename($file, '.php'));
             if ($r->isSubclassOf('Symfony\\Component\\Console\\Command\\Command') && !$r->isAbstract()) {
                 $application->add($r->newInstance());
             }

@@ -2,8 +2,8 @@
 
 namespace Symfony\Component\Security\Authorization\Voter;
 
-use Symfony\Component\Security\Authentication\AuthenticationTrustResolverInterface;
 use Symfony\Component\Security\Authentication\Token\TokenInterface;
+use Symfony\Component\Security\Authentication\Token\AnonymousToken;
 
 /*
  * This file is part of the Symfony package.
@@ -15,40 +15,22 @@ use Symfony\Component\Security\Authentication\Token\TokenInterface;
  */
 
 /**
- * AuthenticatedVoter votes if an attribute like IS_AUTHENTICATED_FULLY,
- * IS_AUTHENTICATED_REMEMBERED, or IS_AUTHENTICATED_ANONYMOUSLY is present.
- *
- * This list is most restrictive to least restrictive checking.
+ * AuthenticatedVoter votes if an attribute like IS_AUTHENTICATED_FULLY or
+ * IS_AUTHENTICATED_ANONYMOUSLY is present.
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
- * @author Johannes M. Schmitt <schmittjoh@gmail.com>
  */
 class AuthenticatedVoter implements VoterInterface
 {
     const IS_AUTHENTICATED_FULLY = 'IS_AUTHENTICATED_FULLY';
-    const IS_AUTHENTICATED_REMEMBERED = 'IS_AUTHENTICATED_REMEMBERED';
     const IS_AUTHENTICATED_ANONYMOUSLY = 'IS_AUTHENTICATED_ANONYMOUSLY';
-
-    protected $authenticationTrustResolver;
-
-    /**
-     * Constructor.
-     *
-     * @param AuthenticationTrustResolverInterface $authenticationTrustResolver
-     *
-     * @return void
-     */
-    public function __construct(AuthenticationTrustResolverInterface $authenticationTrustResolver)
-    {
-        $this->authenticationTrustResolver = $authenticationTrustResolver;
-    }
 
     /**
      * {@inheritdoc}
      */
     public function supportsAttribute($attribute)
     {
-        return null !== $attribute && (self::IS_AUTHENTICATED_FULLY === $attribute || self::IS_AUTHENTICATED_REMEMBERED === $attribute || self::IS_AUTHENTICATED_ANONYMOUSLY === $attribute);
+        return null !== $attribute && (self::IS_AUTHENTICATED_FULLY === $attribute || self::IS_AUTHENTICATED_ANONYMOUSLY === $attribute);
     }
 
     /**
@@ -72,21 +54,11 @@ class AuthenticatedVoter implements VoterInterface
 
             $result = VoterInterface::ACCESS_DENIED;
 
-            if (self::IS_AUTHENTICATED_FULLY === $attribute
-                && $this->authenticationTrustResolver->isFullFledged($token)) {
+            if (self::IS_AUTHENTICATED_FULLY === $attribute && !$token instanceof AnonymousToken) {
                 return VoterInterface::ACCESS_GRANTED;
             }
 
-            if (self::IS_AUTHENTICATED_REMEMBERED === $attribute
-                && ($this->authenticationTrustResolver->isRememberMe($token)
-                    || $this->authenticationTrustResolver->isFullFledged($token))) {
-                return VoterInterface::ACCESS_GRANTED;
-            }
-
-            if (self::IS_AUTHENTICATED_ANONYMOUSLY === $attribute
-                && ($this->authenticationTrustResolver->isAnonymous($token)
-                    || $this->authenticationTrustResolver->isRememberMe($token)
-                    || $this->authenticationTrustResolver->isFullFledged($token))) {
+            if (self::IS_AUTHENTICATED_ANONYMOUSLY === $attribute) {
                 return VoterInterface::ACCESS_GRANTED;
             }
         }

@@ -28,12 +28,10 @@ class PasswordField extends TextField
         parent::configure();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getDisplayedData()
     {
-        return $this->getOption('always_empty') || !$this->isBound()
+        // TESTME
+        return $this->getOption('always_empty') && !$this->isBound()
                 ? ''
                 : parent::getDisplayedData();
     }

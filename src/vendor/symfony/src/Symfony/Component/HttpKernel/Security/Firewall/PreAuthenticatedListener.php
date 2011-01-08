@@ -27,7 +27,7 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
  */
-abstract class PreAuthenticatedListener implements ListenerInterface
+abstract class PreAuthenticatedListener
 {
     protected $securityContext;
     protected $authenticationManager;
@@ -46,18 +46,11 @@ abstract class PreAuthenticatedListener implements ListenerInterface
      * @param EventDispatcher $dispatcher An EventDispatcher instance
      * @param integer         $priority   The priority
      */
-    public function register(EventDispatcher $dispatcher)
+    public function register(EventDispatcher $dispatcher, $priority = 0)
     {
-        $dispatcher->connect('core.security', array($this, 'handle'), 0);
+        $dispatcher->connect('core.security', array($this, 'handle'), $priority);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function unregister(EventDispatcher $dispatcher)
-    {
-    }
-    
+
     /**
      * Handles X509 authentication.
      *

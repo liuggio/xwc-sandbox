@@ -39,29 +39,22 @@ abstract class FileLoader extends Loader
     /**
      * Adds routes from a resource.
      *
-     * @param mixed  $resource A Resource
-     * @param string $type     The resource type
+     * @param mixed $resource A Resource
      *
      * @return RouteCollection A RouteCollection instance
      */
-    public function import($resource, $type = null)
+    public function import($resource)
     {
-        $loader = $this->resolve($resource, $type);
+        $loader = $this->resolve($resource);
 
         if ($loader instanceof FileLoader && null !== $this->currentDir) {
             $resource = $this->getAbsolutePath($resource, $this->currentDir);
         }
 
-        return $loader->load($resource, $type);
+        return $loader->load($resource);
     }
 
     /**
-     * Returns a full path for a given file.
-     *
-     * @param string $file A file path
-     *
-     * @return string The full path for the file
-     *
      * @throws \InvalidArgumentException When file is not found
      */
     protected function findFile($file)
@@ -74,14 +67,6 @@ abstract class FileLoader extends Loader
         return $path;
     }
 
-    /**
-     * Gets the absolute path for the file path if possible.
-     *
-     * @param string $file        A file path
-     * @param string $currentPath The current path
-     *
-     * @return string
-     */
     protected function getAbsolutePath($file, $currentPath = null)
     {
         if (self::isAbsolutePath($file)) {
@@ -99,13 +84,6 @@ abstract class FileLoader extends Loader
         return $file;
     }
 
-    /**
-     * Returns whether the file path is an absolute path.
-     *
-     * @param string $file A file path
-     *
-     * @return boolean
-     */
     static protected function isAbsolutePath($file)
     {
         if ($file[0] == '/' || $file[0] == '\\' 

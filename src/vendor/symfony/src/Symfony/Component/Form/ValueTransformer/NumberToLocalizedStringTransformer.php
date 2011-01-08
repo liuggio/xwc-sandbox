@@ -50,7 +50,7 @@ class NumberToLocalizedStringTransformer extends BaseValueTransformer
      */
     public function transform($value)
     {
-        if (null === $value) {
+        if ($value === null) {
             return '';
         }
 
@@ -79,7 +79,7 @@ class NumberToLocalizedStringTransformer extends BaseValueTransformer
             throw new \InvalidArgumentException(sprintf('Expected argument of type string, %s given', gettype($value)));
         }
 
-        if ('' === $value) {
+        if ($value === '') {
             return null;
         }
 

@@ -30,7 +30,7 @@ use Symfony\Component\Security\Exception\AuthenticationException;
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
  */
-class DigestAuthenticationListener implements ListenerInterface
+class DigestAuthenticationListener
 {
     protected $securityContext;
     protected $provider;
@@ -51,16 +51,9 @@ class DigestAuthenticationListener implements ListenerInterface
      * @param EventDispatcher $dispatcher An EventDispatcher instance
      * @param integer         $priority   The priority
      */
-    public function register(EventDispatcher $dispatcher)
+    public function register(EventDispatcher $dispatcher, $priority = 0)
     {
-        $dispatcher->connect('core.security', array($this, 'handle'), 0);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function unregister(EventDispatcher $dispatcher)
-    {
+        $dispatcher->connect('core.security', array($this, 'handle'), $priority);
     }
 
     /**

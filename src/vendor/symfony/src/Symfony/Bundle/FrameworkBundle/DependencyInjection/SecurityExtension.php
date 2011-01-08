@@ -8,7 +8,6 @@ use Symfony\Component\DependencyInjection\Resource\FileResource;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Component\HttpFoundation\RequestMatcher;
 
 /*
@@ -126,31 +125,15 @@ class SecurityExtension extends Extension
 
     protected function createFirewalls($config, ContainerBuilder $container)
     {
-        $providerIds = $this->createUserProviders($config, $container);
+        $providerIds = $this->createAuthenticationProviders($config, $container);
 
         if (!$firewalls = $this->fixConfig($config, 'firewall')) {
             return;
         }
 
-        // make the ContextListener aware of the configured user providers
-        $definition = $container->getDefinition('security.context_listener');
-        $arguments = $definition->getArguments();
-        $userProviders = array();
-        foreach (array_keys($providerIds) as $userProviderId) {
-            $userProviders[] = new Reference($userProviderId);
-        }
-        $arguments[1] = $userProviders;
-        $definition->setArguments($arguments);
-
         // load service templates
-        $c = new ContainerBuilder($container->getParameterBag());
-        $loader = new XmlFileLoader($c, array(__DIR__.'/../Resources/config', __DIR__.'/Resources/config'));
+        $loader = new XmlFileLoader($container, array(__DIR__.'/../Resources/config', __DIR__.'/Resources/config'));
         $loader->load('security_templates.xml');
-
-        foreach ($this->fixConfig($config, 'template') as $template) {
-            $loader->load($c->getParameterBag()->resolveValue($template));
-        }
-        $container->merge($c);
 
         // load firewall map
         $map = $container->getDefinition('security.firewall.map');
@@ -161,7 +144,14 @@ class SecurityExtension extends Extension
         }
 
         // remove all service templates
-        foreach ($c->getServiceIds() as $id) {
+        $ids = array(
+            'security.authentication.listener.x509',
+            'security.authentication.listener.basic',
+            'security.authentication.listener.digest',
+            'security.access_listener',
+            'security.exception_listener',
+        );
+        foreach ($ids as $id) {
             $container->remove($id);
         }
     }
@@ -213,31 +203,14 @@ class SecurityExtension extends Extension
 
         // Logout listener
         if (array_key_exists('logout', $firewall)) {
-            $listenerId = 'security.logout_listener.'.$id;
-            $listener = $container->setDefinition($listenerId, clone $container->getDefinition('security.logout_listener'));
+            $listeners[] = new Reference('security.logout_listener');
 
-            $listeners[] = new Reference($listenerId);
-
-            $arguments = $listener->getArguments();
             if (isset($firewall['logout']['path'])) {
-                $arguments[1] = $firewall['logout']['path'];
+                $container->setParameter('security.logout.path', $firewall['logout']['path']);
             }
 
             if (isset($firewall['logout']['target'])) {
-                $arguments[2] = $firewall['logout']['target'];
-            }
-            $listener->setArguments($arguments);
-
-            if (!isset($firewall['stateless']) || !$firewall['stateless']) {
-                $listener->addMethodCall('addHandler', array(new Reference('security.logout.handler.session')));
-            }
-
-            if (count($cookies = $this->fixConfig($firewall['logout'], 'cookie')) > 0) {
-                $cookieHandlerId = 'security.logout.handler.cookie_clearing.'.$id;
-                $cookieHandler = $container->setDefinition($cookieHandlerId, clone $container->getDefinition('security.logout.handler.cookie_clearing'));
-                $cookieHandler->setArguments(array($cookies));
-
-                $listener->addMethodCall('addHandler', array(new Reference($cookieHandlerId)));
+                $container->setParameter('security.logout.target_path', $firewall['logout']['target']);
             }
         }
 
@@ -270,37 +243,55 @@ class SecurityExtension extends Extension
         $hasListeners = false;
         $defaultEntryPoint = null;
 
-        $positions = array('pre_auth', 'form', 'http');
+        // X509
+        if (array_key_exists('x509', $firewall)) {
+            list($provider, $listener) = $this->createX509Listener($container, $id, $firewall['x509'], $defaultProvider, $providerIds);
 
-        $tags = $container->findTaggedServiceIds('security.listener.factory');
-        $factories = array();
-        foreach ($positions as $position) {
-            $factories[$position] = array();
+            $listeners[] = new Reference($listener);
+            $providers[] = new Reference($provider);
+            $hasListeners = true;
         }
 
-        foreach (array_keys($tags) as $tag) {
-            $factory = $container->get($tag);
+        // Form
+        if (array_key_exists('form_login', $firewall)) {
+            $firewall['form-login'] = $firewall['form_login'];
+        }
+        if (array_key_exists('form-login', $firewall)) {
+            list($provider, $listener) = $this->createFormLoginListener($container, $id, $firewall['form-login'], $defaultProvider, $providerIds);
 
-            $factories[$factory->getPosition()][] = $factory;
+            $listeners[] = new Reference($listener);
+            $providers[] = new Reference($provider);
+            $hasListeners = true;
+            $defaultEntryPoint = 'security.authentication.form_entry_point';
         }
 
-        foreach ($positions as $position) {
-            foreach ($factories[$position] as $factory) {
-                $key = $factory->getKey();
-                $keybis = str_replace('-', '_', $key);
+        // HTTP Basic
+        if (array_key_exists('http_basic', $firewall)) {
+            $firewall['http-basic'] = $firewall['http_basic'];
+        }
+        if (array_key_exists('http-basic', $firewall)) {
+            list($provider, $listener) = $this->createHttpBasicListener($container, $id, $firewall['http-basic'], $defaultProvider, $providerIds);
 
-                if (array_key_exists($keybis, $firewall)) {
-                    $firewall[$key] = $firewall[$keybis];
-                }
-                if (array_key_exists($key, $firewall)) {
-                    $userProvider = isset($firewall[$key]['provider']) ? $this->getUserProviderId($firewall[$key]['provider']) : $defaultProvider;
+            $listeners[] = new Reference($listener);
+            $providers[] = new Reference($provider);
+            $hasListeners = true;
+            if (null === $defaultEntryPoint) {
+                $defaultEntryPoint = 'security.authentication.basic_entry_point';
+            }
+        }
 
-                    list($provider, $listener, $defaultEntryPoint) = $factory->create($container, $id, $firewall[$key], $userProvider, $providerIds, $defaultEntryPoint);
+        // HTTP Digest
+        if (array_key_exists('http_digest', $firewall)) {
+            $firewall['http-digest'] = $firewall['http_digest'];
+        }
+        if (array_key_exists('http-digest', $firewall)) {
+            list($provider, $listener) = $this->createHttpDigestListener($container, $id, $firewall['http-digest'], $defaultProvider, $providerIds);
 
-                    $listeners[] = new Reference($listener);
-                    $providers[] = new Reference($provider);
-                    $hasListeners = true;
-                }
+            $listeners[] = new Reference($listener);
+            $providers[] = new Reference($provider);
+            $hasListeners = true;
+            if (null === $defaultEntryPoint) {
+                $defaultEntryPoint = 'security.authentication.digest_entry_point';
             }
         }
 
@@ -318,7 +309,7 @@ class SecurityExtension extends Extension
     }
 
     // Parses user providers and returns an array of their ids
-    protected function createUserProviders($config, ContainerBuilder $container)
+    protected function createAuthenticationProviders($config, ContainerBuilder $container)
     {
         $providers = $this->fixConfig($config, 'provider');
         if (!$providers) {
@@ -328,11 +319,6 @@ class SecurityExtension extends Extension
         $providerIds = array();
         foreach ($providers as $name => $provider) {
             list($id, $encoder) = $this->createUserDaoProvider($name, $provider, $container);
-
-            if (isset($providerIds[$id])) {
-                throw new \RuntimeException(sprintf('Provider names must be unique. Duplicate entry for %s.', $id));
-            }
-
             $providerIds[$id] = $encoder;
         }
 
@@ -355,14 +341,16 @@ class SecurityExtension extends Extension
         }
 
         if (!$name) {
-            throw new \RuntimeException('You must define a name for each user provider.');
+            $name = md5(serialize($provider));
         }
 
-        $name = $this->getUserProviderId(strtolower($name));
+        $name = $this->getUserProviderId($name);
 
         // Existing DAO service provider
         if (isset($provider['id'])) {
-            return array($provider['id'], $encoder);
+            $container->setAlias($name, $provider['id']);
+
+            return array($name, $encoder);
         }
 
         // Chain provider
@@ -437,6 +425,114 @@ class SecurityExtension extends Extension
         return 'security.authentication.provider.'.$name;
     }
 
+    protected function createX509Listener($container, $id, $config, $defaultProvider, $providerIds)
+    {
+        // provider
+        $userProvider = isset($config['provider']) ? $this->getUserProviderId($config['provider']) : $defaultProvider;
+
+        $provider = 'security.authentication.provider.pre_authenticated.'.$id;
+        $container
+            ->register($provider, '%security.authentication.provider.pre_authenticated.class%')
+            ->setArguments(array(new Reference($userProvider), new Reference('security.account_checker')))
+        ;
+
+        // listener
+        $listenerId = 'security.authentication.listener.x509.'.$id;
+        $listener = $container->setDefinition($listenerId, clone $container->getDefinition('security.authentication.listener.x509'));
+        $arguments = $listener->getArguments();
+        $arguments[1] = new Reference($provider);
+        $listener->setArguments($arguments);
+
+        return array($provider, $listenerId);
+    }
+
+    protected function createFormLoginListener($container, $id, $config, $defaultProvider, $providerIds)
+    {
+        // provider
+        $userProvider = isset($config['provider']) ? $this->getUserProviderId($config['provider']) : $defaultProvider;
+
+        $provider = 'security.authentication.provider.dao.'.$id;
+        $container
+            ->register($provider, '%security.authentication.provider.dao.class%')
+            ->setArguments(array(new Reference($userProvider), new Reference('security.account_checker'), new Reference('security.encoder.'.$providerIds[$userProvider])));
+        ;
+
+        // listener
+        $listenerId = 'security.authentication.listener.form.'.$id;
+        $listener = $container->setDefinition($listenerId, clone $container->getDefinition('security.authentication.listener.form'));
+        $arguments = $listener->getArguments();
+        $arguments[1] = new Reference($provider);
+        $listener->setArguments($arguments);
+
+        $options = array(
+            'check_path'                     => '/login_check',
+            'login_path'                     => '/login',
+            'use_forward'                    => false,
+            'always_use_default_target_path' => false,
+            'default_target_path'            => '/',
+            'target_path_parameter'          => '_target_path',
+            'use_referer'                    => false,
+            'failure_path'                   => null,
+            'failure_forward'                => false,
+        );
+        foreach (array_keys($options) as $key) {
+            if (isset($config[$key])) {
+                $options[$key] = $config[$key];
+            }
+        }
+        $container->setParameter('security.authentication.form.options', $options);
+        $container->setParameter('security.authentication.form.login_path', $options['login_path']);
+        $container->setParameter('security.authentication.form.use_forward', $options['use_forward']);
+
+        return array($provider, $listenerId);
+    }
+
+    protected function createHttpBasicListener($container, $id, $config, $defaultProvider, $providerIds)
+    {
+        // provider
+        $userProvider = isset($config['provider']) ? $this->getUserProviderId($config['provider']) : $defaultProvider;
+
+        $provider = 'security.authentication.provider.dao.'.$id;
+        $container
+            ->register($provider, '%security.authentication.provider.dao.class%')
+            ->setArguments(array(new Reference($userProvider), new Reference('security.account_checker'), new Reference('security.encoder.'.$providerIds[$userProvider])));
+        ;
+
+        // listener
+        $listenerId = 'security.authentication.listener.basic.'.$id;
+        $listener = $container->setDefinition($listenerId, clone $container->getDefinition('security.authentication.listener.basic'));
+        $arguments = $listener->getArguments();
+        $arguments[1] = new Reference($provider);
+        $listener->setArguments($arguments);
+
+        if (isset($config['path'])) {
+            $container->setParameter('security.authentication.form.path', $config['path']);
+        }
+
+        return array($provider, $listenerId);
+    }
+
+    protected function createHttpDigestListener($container, $id, $config, $defaultProvider, $providerIds)
+    {
+        // provider
+        $userProvider = isset($config['provider']) ? $this->getUserProviderId($config['provider']) : $defaultProvider;
+
+        $provider = 'security.authentication.provider.dao.'.$id;
+        $container
+            ->register($provider, '%security.authentication.provider.dao.class%')
+            ->setArguments(array(new Reference($userProvider), new Reference('security.account_checker'), new Reference('security.encoder.'.$providerIds[$userProvider])));
+        ;
+
+        // listener
+        $listenerId = 'security.authentication.listener.digest.'.$id;
+        $listener = $container->setDefinition($listenerId, clone $container->getDefinition('security.authentication.listener.digest'));
+        $arguments = $listener->getArguments();
+        $arguments[1] = new Reference($userProvider);
+        $listener->setArguments($arguments);
+
+        return array($provider, $listenerId);
+    }
+
     protected function createAccessListener($container, $id, $providers)
     {
         // Authentication manager
@@ -461,7 +557,7 @@ class SecurityExtension extends Extension
         $exceptionListenerId = 'security.exception_listener.'.$id;
         $listener = $container->setDefinition($exceptionListenerId, clone $container->getDefinition('security.exception_listener'));
         $arguments = $listener->getArguments();
-        $arguments[2] = null === $defaultEntryPoint ? null : new Reference($defaultEntryPoint);
+        $arguments[1] = null === $defaultEntryPoint ? null : new Reference($defaultEntryPoint);
         $listener->setArguments($arguments);
 
         return $exceptionListenerId;
@@ -514,7 +610,7 @@ class SecurityExtension extends Extension
         if (isset($config[$key.'s'])) {
             $values = $config[$key.'s'];
         } elseif (isset($config[$key])) {
-            if (is_string($config[$key]) || !is_int(key($config[$key]))) {
+            if (!is_int(key($config[$key]))) {
                 // only one
                 $values = array($config[$key]);
             } else {

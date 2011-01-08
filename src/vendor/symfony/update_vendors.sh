@@ -20,9 +20,6 @@ cd $CURRENT/doctrine-migrations && git pull
 # Doctrine MongoDB
 cd $CURRENT/doctrine-mongodb && git pull
 
-# Doctrine MongoDB ODM
-cd $CURRENT/doctrine-mongodb-odm && git pull
-
 # Swiftmailer
 cd $CURRENT/swiftmailer && git pull
 

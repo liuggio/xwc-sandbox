@@ -2,6 +2,8 @@
 
 namespace Symfony\Component\Routing\Loader;
 
+use Symfony\Component\Routing\Resource\FileResource;
+
 /*
  * This file is part of the Symfony framework.
  *
@@ -23,10 +25,9 @@ class ClosureLoader extends Loader
     /**
      * Loads a Closure.
      *
-     * @param \Closure $closure A Closure
-     * @param string   $type    The resource type
+     * @param \Closure $resource The resource
      */
-    public function load($closure, $type = null)
+    public function load($closure)
     {
         return call_user_func($closure);
     }
@@ -34,13 +35,12 @@ class ClosureLoader extends Loader
     /**
      * Returns true if this class supports the given resource.
      *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
+     * @param  mixed $resource A resource
      *
-     * @return boolean True if this class supports the given resource, false otherwise
+     * @return Boolean true if this class supports the given resource, false otherwise
      */
-    public function supports($resource, $type = null)
+    public function supports($resource)
     {
-        return $resource instanceof \Closure && (!$type || 'closure' === $type);
+        return $resource instanceof \Closure;
     }
 }

@@ -32,7 +32,7 @@ use Symfony\Component\Security\Authentication\Token\TokenInterface;
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
  */
-class SwitchUserListener implements ListenerInterface
+class SwitchUserListener
 {
     protected $securityContext;
     protected $provider;
@@ -62,18 +62,11 @@ class SwitchUserListener implements ListenerInterface
      * @param EventDispatcher $dispatcher An EventDispatcher instance
      * @param integer         $priority   The priority
      */
-    public function register(EventDispatcher $dispatcher)
+    public function register(EventDispatcher $dispatcher, $priority = 0)
     {
-        $dispatcher->connect('core.security', array($this, 'handle'), 0);
+        $dispatcher->connect('core.security', array($this, 'handle'), $priority);
     }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function unregister(EventDispatcher $dispatcher)
-    {
-    }
-    
+
     /**
      * Handles digest authentication.
      *

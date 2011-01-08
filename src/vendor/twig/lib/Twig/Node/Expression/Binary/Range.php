@@ -18,7 +18,7 @@ class Twig_Node_Expression_Binary_Range extends Twig_Node_Expression_Binary
     public function compile($compiler)
     {
         $compiler
-            ->raw('range(')
+            ->raw('twig_range_filter(')
             ->subcompile($this->getNode('left'))
             ->raw(', ')
             ->subcompile($this->getNode('right'))

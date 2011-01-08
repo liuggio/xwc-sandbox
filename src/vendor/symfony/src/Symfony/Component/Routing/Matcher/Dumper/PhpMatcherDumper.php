@@ -60,25 +60,17 @@ class PhpMatcherDumper extends MatcherDumper
                 $conditions[] = sprintf("isset(\$this->context['method']) && preg_match('#^(%s)$#xi', \$this->context['method'])", $req);
             }
 
-            if (!count($compiledRoute->getVariables()) && false !== preg_match('#^(.)\^(?P<url>.*?)\$\1#', $compiledRoute->getRegex(), $m)) {
-                $conditions[] = sprintf("\$url === '%s'", str_replace('\\', '', $m['url']));
-
-                $matches = 'array()';
-            } else {
-                if ($compiledRoute->getStaticPrefix()) {
-                    $conditions[] = sprintf("0 === strpos(\$url, '%s')", $compiledRoute->getStaticPrefix());
-                }
-
-                $conditions[] = sprintf("preg_match('%s', \$url, \$matches)", $compiledRoute->getRegex());
-
-                $matches = '$matches';
+            if ($compiledRoute->getStaticPrefix()) {
+                $conditions[] = sprintf("0 === strpos(\$url, '%s')", $compiledRoute->getStaticPrefix());
             }
+
+            $conditions[] = sprintf("preg_match('%s', \$url, \$matches)", $compiledRoute->getRegex());
 
             $conditions = implode(' && ', $conditions);
 
             $code[] = sprintf(<<<EOF
         if ($conditions) {
-            return array_merge(\$this->mergeDefaults($matches, %s), array('_route' => '%s'));
+            return array_merge(\$this->mergeDefaults(\$matches, %s), array('_route' => '%s'));
         }
 
 EOF

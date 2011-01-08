@@ -3,7 +3,7 @@
 namespace Symfony\Component\Console\Output;
 
 /*
- * This file is part of the Symfony framework.
+ * This file is part of the symfony framework.
  *
  * (c) Fabien Potencier <fabien.potencier@symfony-project.com>
  *
@@ -16,17 +16,19 @@ namespace Symfony\Component\Console\Output;
  *
  *     $output = new NullOutput();
  *
- * @author Fabien Potencier <fabien.potencier@symfony-project.com>
+ * @package    symfony
+ * @subpackage console
+ * @author     Fabien Potencier <fabien.potencier@symfony-project.com>
  */
 class NullOutput extends Output
 {
-    /**
-     * Writes a message to the output.
-     *
-     * @param string $message A message to write to the output
-     * @param Boolean $newline Whether to add a newline or not
-     */
-    public function doWrite($message, $newline)
-    {
-    }
+  /**
+   * Writes a message to the output.
+   *
+   * @param string $message A message to write to the output
+   * @param Boolean $newline Whether to add a newline or not
+   */
+  public function doWrite($message, $newline)
+  {
+  }
 }

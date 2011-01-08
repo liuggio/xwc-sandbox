@@ -109,11 +109,7 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
 
     protected function _getPortableTableDefinition($table)
     {
-        if ($table['schema_name'] == 'public') {
-            return $table['table_name'];
-        } else {
-            return $table['schema_name'] . "." . $table['table_name'];
-        }
+        return $table['table_name'];
     }
 
     /**
@@ -159,14 +155,8 @@ class PostgreSqlSchemaManager extends AbstractSchemaManager
 
     protected function _getPortableSequenceDefinition($sequence)
     {
-        if ($sequence['schemaname'] != 'public') {
-            $sequenceName = $sequence['schemaname'] . "." . $sequence['relname'];
-        } else {
-            $sequenceName = $sequence['relname'];
-        }
-
-        $data = $this->_conn->fetchAll('SELECT min_value, increment_by FROM ' . $sequenceName);
-        return new Sequence($sequenceName, $data[0]['increment_by'], $data[0]['min_value']);
+        $data = $this->_conn->fetchAll('SELECT min_value, increment_by FROM ' . $sequence['relname']);
+        return new Sequence($sequence['relname'], $data[0]['increment_by'], $data[0]['min_value']);
     }
 
     protected function _getPortableTableColumnDefinition($tableColumn)

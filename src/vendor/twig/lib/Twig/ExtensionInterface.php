@@ -62,13 +62,6 @@ interface Twig_ExtensionInterface
     public function getOperators();
 
     /**
-     * Returns a list of global functions to add to the existing list.
-     *
-     * @return array An array of global functions
-     */
-    public function getGlobals();
-
-    /**
      * Returns the name of the extension.
      *
      * @return string The extension name

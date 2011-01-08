@@ -620,16 +620,6 @@ class EntityManager
     }
 
     /**
-     * Check if the Entity manager is open or closed.
-     * 
-     * @return bool
-     */
-    public function isOpen()
-    {
-        return (!$this->closed);
-    }
-
-    /**
      * Gets the UnitOfWork used by the EntityManager to coordinate operations.
      *
      * @return Doctrine\ORM\UnitOfWork

@@ -4,7 +4,7 @@ namespace Symfony\Bundle\FrameworkBundle\Routing;
 
 use Symfony\Component\Routing\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Routing\Loader\LoaderResolver as BaseLoaderResolver;
+use Symfony\Component\Routing\Loader\LoaderResolver;
 
 /*
  * This file is part of the Symfony framework.
@@ -16,7 +16,6 @@ use Symfony\Component\Routing\Loader\LoaderResolver as BaseLoaderResolver;
  */
 
 /**
- * LazyLoader facilitate lazy loading of loader services.
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
  */
@@ -25,12 +24,6 @@ class LazyLoader implements LoaderInterface
     protected $container;
     protected $service;
 
-    /**
-     * Constructor.
-     *
-     * @param ContainerInterface $container The container
-     * @param string             $service   The loader service
-     */
     public function __construct(ContainerInterface $container, $service)
     {
         $this->container = $container;
@@ -38,35 +31,23 @@ class LazyLoader implements LoaderInterface
     }
 
     /**
-     * Loads a resource.
-     *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
-     *
-     * @return RouteCollection A RouteCollection instance
+     * {@inheritdoc}
      */
-    public function load($resource, $type = null)
+    public function load($resource)
     {
-        return $this->container->get($this->service)->load($resource, $type);
+        return $this->container->get($this->service)->load($resource);
     }
 
     /**
-     * Returns true if this class supports the given resource.
-     *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
-     *
-     * @return boolean True if this class supports the given resource, false otherwise
+     * {@inheritdoc}
      */
-    public function supports($resource, $type = null)
+    public function supports($resource)
     {
-        return $this->container->get($this->service)->supports($resource, $type);
+        return $this->container->get($this->service)->supports($resource);
     }
 
     /**
-     * Gets the loader resolver.
-     *
-     * @return LoaderResolver A LoaderResolver instance
+     * {@inheritdoc}
      */
     public function getResolver()
     {
@@ -74,11 +55,9 @@ class LazyLoader implements LoaderInterface
     }
 
     /**
-     * Sets the loader resolver.
-     *
-     * @param LoaderResolver $resolver A LoaderResolver instance
+     * {@inheritdoc}
      */
-    public function setResolver(BaseLoaderResolver $resolver)
+    public function setResolver(LoaderResolver $resolver)
     {
         $this->container->get($this->service)->setResolver($resolver);
     }

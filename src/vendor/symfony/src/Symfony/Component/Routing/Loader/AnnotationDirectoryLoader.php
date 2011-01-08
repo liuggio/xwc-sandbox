@@ -24,16 +24,15 @@ class AnnotationDirectoryLoader extends AnnotationFileLoader
     /**
      * Loads from annotations from a directory.
      *
-     * @param string $path A directory path
-     * @param string $type The resource type
+     * @param  string $resource A directory prefixed with annotations:
      *
      * @return RouteCollection A RouteCollection instance
      *
-     * @throws \InvalidArgumentException When the directory does not exist or its routes cannot be parsed
+     * @throws \InvalidArgumentException When route can't be parsed
      */
-    public function load($path, $type = null)
+    public function load($resource)
     {
-        $dir = $this->getAbsolutePath($path);
+        $dir = $this->getAbsolutePath(substr($resource, 12));
         if (!file_exists($dir)) {
             throw new \InvalidArgumentException(sprintf('The directory "%s" does not exist (in: %s).', $dir, implode(', ', $this->paths)));
         }
@@ -45,7 +44,7 @@ class AnnotationDirectoryLoader extends AnnotationFileLoader
             }
 
             if ($class = $this->findClass($file)) {
-                $collection->addCollection($this->loader->load($class, $type));
+                $collection->addCollection($this->loader->load($class));
             }
         }
 
@@ -55,13 +54,12 @@ class AnnotationDirectoryLoader extends AnnotationFileLoader
     /**
      * Returns true if this class supports the given resource.
      *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
+     * @param  mixed $resource A resource
      *
-     * @return boolean True if this class supports the given resource, false otherwise
+     * @return Boolean true if this class supports the given resource, false otherwise
      */
-    public function supports($resource, $type = null)
+    public function supports($resource)
     {
-        return is_string($resource) && is_dir($this->getAbsolutePath($resource)) && (!$type || 'annotation' === $type);
+        return is_string($resource) && 0 === strpos($resource, 'annotations:') && is_dir($this->getAbsolutePath(substr($resource, 12)));
     }
 }

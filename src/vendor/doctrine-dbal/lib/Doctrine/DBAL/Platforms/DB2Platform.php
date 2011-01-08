@@ -37,8 +37,8 @@ class DB2Platform extends AbstractPlatform
             'character'     => 'string',
             'clob'          => 'text',
             'decimal'       => 'decimal',
-            'double'        => 'float',
-            'real'          => 'float',
+            'double'        => 'decimal',
+            'real'          => 'decimal',
             'timestamp'     => 'datetime',
         );
     }

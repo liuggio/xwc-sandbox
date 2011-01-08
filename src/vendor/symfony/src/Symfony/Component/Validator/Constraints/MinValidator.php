@@ -19,7 +19,7 @@ class MinValidator extends ConstraintValidator
 {
     public function isValid($value, Constraint $constraint)
     {
-        if (null === $value) {
+        if ($value === null) {
             return true;
         }
 

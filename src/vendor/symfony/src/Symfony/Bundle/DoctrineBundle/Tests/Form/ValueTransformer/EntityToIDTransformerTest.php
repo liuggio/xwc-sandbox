@@ -13,7 +13,7 @@ class EntityToIDTransformerTest extends \Symfony\Bundle\DoctrineBundle\Tests\Tes
      */
     private $em;
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->em = $this->createTestEntityManager();

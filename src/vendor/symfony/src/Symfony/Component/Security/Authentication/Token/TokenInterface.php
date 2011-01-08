@@ -2,8 +2,6 @@
 
 namespace Symfony\Component\Security\Authentication\Token;
 
-use Symfony\Component\Security\User\AccountInterface;
-
 /*
  * This file is part of the Symfony package.
  *
@@ -35,14 +33,6 @@ interface TokenInterface extends \Serializable
     function getRoles();
 
     /**
-     * Sets the user's roles
-     *
-     * @param array $roles
-     * @return void
-     */
-    function setRoles(array $roles);
-
-    /**
      * Returns the user credentials.
      *
      * @return mixed The user credentials
@@ -50,20 +40,18 @@ interface TokenInterface extends \Serializable
     function getCredentials();
 
     /**
-     * Returns a user representation.
+     * Checks whether the token is immutable or not.
      *
-     * @return mixed either returns an object which implements __toString(), or
-     *                  a primitive string is returned.
+     * @return Boolean true if the token is immutable, false otherwise
      */
-    function getUser();
+    function isImmutable();
 
     /**
-     * Sets the user.
+     * Returns a user instance.
      *
-     * @param mixed $user can either be an object which implements __toString(), or
-     *                       only a primitive string
+     * @return object The User instance
      */
-    function setUser($user);
+    function getUser();
 
     /**
      * Checks if the user is authenticated or not.
@@ -78,22 +66,6 @@ interface TokenInterface extends \Serializable
      * @param Boolean $isAuthenticated The authenticated flag
      */
     function setAuthenticated($isAuthenticated);
-
-    /**
-     * Whether this token is considered immutable
-     *
-     * @return Boolean
-     */
-    function isImmutable();
-
-    /**
-     * Marks this token as immutable. This change cannot be reversed.
-     *
-     * You'll need to create a new token if you want a mutable token again.
-     *
-     * @return void
-     */
-    function setImmutable();
 
     /**
      * Removes sensitive information from the token.

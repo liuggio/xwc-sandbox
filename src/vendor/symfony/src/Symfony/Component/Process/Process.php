@@ -60,7 +60,7 @@ class Process
     }
 
     /**
-     * Runs the process.
+     * run the process.
      *
      * The callback receives the type of output (out or err) and
      * some bytes from the output in real-time. It allows to have feedback
@@ -115,7 +115,7 @@ class Process
 
             $n = @stream_select($r, $w, $e, $this->timeout);
 
-            if (false === $n) {
+            if ($n === false) {
                 break;
             } elseif ($n === 0) {
                 proc_terminate($process);

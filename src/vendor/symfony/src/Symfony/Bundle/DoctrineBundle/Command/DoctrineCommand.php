@@ -139,8 +139,7 @@ abstract class DoctrineCommand extends Command
         $bundleMetadatas = array();
         $entityManagers = $this->getDoctrineEntityManagers();
         foreach ($entityManagers as $key => $em) {
-            $cmf = new DisconnectedClassMetadataFactory();
-            $cmf->setEntityManager($em);
+            $cmf = new SymfonyDisconnectedClassMetadataFactory($em);
             $metadatas = $cmf->getAllMetadata();
             foreach ($metadatas as $metadata) {
 
@@ -151,5 +150,20 @@ abstract class DoctrineCommand extends Command
         }
 
         return $bundleMetadatas;
+    }
+}
+
+class SymfonyDisconnectedClassMetadataFactory extends DisconnectedClassMetadataFactory
+{
+    /**
+     * @override
+     */
+    protected function _newClassMetadataInstance($className)
+    {
+        if (class_exists($className)) {
+            return new ClassMetadata($className);
+        } else {
+            return new ClassMetadataInfo($className);
+        }
     }
 }

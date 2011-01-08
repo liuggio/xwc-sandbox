@@ -65,16 +65,9 @@ abstract class FormAuthenticationListener
      * @param EventDispatcher $dispatcher An EventDispatcher instance
      * @param integer         $priority   The priority
      */
-    public function register(EventDispatcher $dispatcher)
+    public function register(EventDispatcher $dispatcher, $priority = 0)
     {
-        $dispatcher->connect('core.security', array($this, 'handle'), 0);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function unregister(EventDispatcher $dispatcher)
-    {
+        $dispatcher->connect('core.security', array($this, 'handle'), $priority);
     }
 
     /**
@@ -179,7 +172,7 @@ abstract class FormAuthenticationListener
             return $targetUrl;
         }
 
-        if ($this->options['use_referer'] && $targetUrl = $request->headers->get('Referer')) {
+        if ($this->options['use_referer'] && $targetUrl = $request->getHeader('Referer')) {
 
             return $targetUrl;
         }

@@ -41,7 +41,7 @@ class FormConfiguration
      */
     static public function getDefaultLocale()
     {
-        return isset(self::$defaultLocale) ? self::$defaultLocale : \Locale::getDefault();
+        return self::$defaultLocale;
     }
 
     /**

@@ -58,7 +58,7 @@ EOT
             $this->dropDatabaseForConnection($connection, $output);
             $found = true;
         }
-        if (false === $found) {
+        if ($found === false) {
             if ($input->getOption('connection')) {
                 throw new \InvalidArgumentException(sprintf('<error>Could not find a connection named <comment>%s</comment></error>', $input->getOption('connection')));
             } else {

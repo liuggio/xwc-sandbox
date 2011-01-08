@@ -23,7 +23,7 @@ use Symfony\Component\Security\Authentication\Token\AnonymousToken;
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
  */
-class AnonymousAuthenticationListener implements ListenerInterface
+class AnonymousAuthenticationListener
 {
     protected $context;
     protected $key;
@@ -43,16 +43,9 @@ class AnonymousAuthenticationListener implements ListenerInterface
      * @param EventDispatcher $dispatcher An EventDispatcher instance
      * @param integer         $priority   The priority
      */
-    public function register(EventDispatcher $dispatcher)
+    public function register(EventDispatcher $dispatcher, $priority = 0)
     {
-        $dispatcher->connect('core.security', array($this, 'handle'), 0);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function unregister(EventDispatcher $dispatcher)
-    {
+        $dispatcher->connect('core.security', array($this, 'handle'), $priority);
     }
 
     /**

@@ -1509,9 +1509,7 @@ class UnitOfWork implements PropertyChangedListener
         
         switch ($this->getEntityState($entity, self::STATE_DETACHED)) {
             case self::STATE_MANAGED:
-                if ($this->isInIdentityMap($entity)) {
-                    $this->removeFromIdentityMap($entity);
-                }
+                $this->removeFromIdentityMap($entity);
                 unset($this->entityInsertions[$oid], $this->entityUpdates[$oid],
                         $this->entityDeletions[$oid], $this->entityIdentifiers[$oid],
                         $this->entityStates[$oid], $this->originalEntityData[$oid]);

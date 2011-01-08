@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityManager;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public function setUp()
     {
         if (!class_exists('Doctrine\\Common\\Version')) {
             $this->markTestSkipped('Doctrine is not available.');

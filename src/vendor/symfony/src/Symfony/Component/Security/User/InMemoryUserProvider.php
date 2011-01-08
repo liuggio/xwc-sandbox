@@ -3,7 +3,8 @@
 namespace Symfony\Component\Security\User;
 
 use Symfony\Component\Security\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Exception\UnsupportedAccountException;
+use Symfony\Component\Security\Exception\AccessDeniedException;
+use Symfony\Component\Security\Authentication\Token\UsernamePasswordToken;
 
 /*
  * This file is part of the Symfony package.
@@ -33,7 +34,6 @@ class InMemoryUserProvider implements UserProviderInterface
      * an array of attributes: 'password', 'enabled', and 'roles'.
      *
      * @param array $users An array of users
-     * @param string $name
      */
     public function __construct(array $users = array())
     {
@@ -74,17 +74,5 @@ class InMemoryUserProvider implements UserProviderInterface
 
         return new User($user->getUsername(), $user->getPassword(), $user->getRoles(), $user->isEnabled(), $user->isAccountNonExpired(),
                 $user->isCredentialsNonExpired(), $user->isAccountNonLocked());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function loadUserByAccount(AccountInterface $account)
-    {
-        if (!$account instanceof User) {
-            throw new UnsupportedAccountException(sprintf('Instances of "%s" are not supported.', get_class($account)));
-        }
-
-        return $this->loadUserByUsername((string) $account);
     }
 }

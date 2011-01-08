@@ -26,7 +26,7 @@ use Symfony\Component\Security\Exception\AccessDeniedException;
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
  */
-class AccessListener implements ListenerInterface
+class AccessListener
 {
     protected $context;
     protected $accessDecisionManager;
@@ -49,16 +49,9 @@ class AccessListener implements ListenerInterface
      * @param EventDispatcher $dispatcher An EventDispatcher instance
      * @param integer         $priority   The priority
      */
-    public function register(EventDispatcher $dispatcher)
+    public function register(EventDispatcher $dispatcher, $priority = 0)
     {
-        $dispatcher->connect('core.security', array($this, 'handle'), 0);
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    public function unregister(EventDispatcher $dispatcher)
-    {
+        $dispatcher->connect('core.security', array($this, 'handle'), $priority);
     }
 
     /**
@@ -86,7 +79,7 @@ class AccessListener implements ListenerInterface
         }
 
         if (!$this->accessDecisionManager->decide($token, $attributes, $request)) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException('Access is denied.');
         }
     }
 }

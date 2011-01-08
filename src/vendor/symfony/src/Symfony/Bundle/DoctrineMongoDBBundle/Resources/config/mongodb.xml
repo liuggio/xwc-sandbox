@@ -9,7 +9,7 @@
     <parameter key="doctrine.odm.mongodb.default_connection">default</parameter>
     <parameter key="doctrine.odm.mongodb.default_database">default</parameter>
     <parameter key="doctrine.odm.mongodb.metadata_cache_driver">array</parameter>
-    <parameter key="doctrine.odm.mongodb.connection_class">Doctrine\MongoDB\Connection</parameter>
+    <parameter key="doctrine.odm.mongodb.connection_class">Doctrine\ODM\MongoDB\Mongo</parameter>
     <parameter key="doctrine.odm.mongodb.configuration_class">Doctrine\ODM\MongoDB\Configuration</parameter>
     <parameter key="doctrine.odm.mongodb.document_manager_class">Doctrine\ODM\MongoDB\DocumentManager</parameter>
     <parameter key="doctrine.odm.mongodb.logger_class">Symfony\Bundle\DoctrineMongoDBBundle\Logger\DoctrineMongoDBLogger</parameter>
@@ -19,10 +19,6 @@
     <!-- proxies -->
     <parameter key="doctrine.odm.mongodb.proxy_namespace">Proxies</parameter>
     <parameter key="doctrine.odm.mongodb.auto_generate_proxy_classes">false</parameter>
-
-    <!-- hydrators -->
-    <parameter key="doctrine.odm.mongodb.hydrator_namespace">Proxies</parameter>
-    <parameter key="doctrine.odm.mongodb.auto_generate_hydrator_classes">false</parameter>
 
     <!-- cache -->
     <parameter key="doctrine.odm.mongodb.cache.array_class">Doctrine\Common\Cache\ArrayCache</parameter>

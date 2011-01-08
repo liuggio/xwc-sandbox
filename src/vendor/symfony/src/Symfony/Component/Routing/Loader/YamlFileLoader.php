@@ -26,14 +26,13 @@ class YamlFileLoader extends FileLoader
     /**
      * Loads a Yaml file.
      *
-     * @param string $file A Yaml file path
-     * @param string $type The resource type
+     * @param  string $file A Yaml file path
      *
      * @return RouteCollection A RouteCollection instance
      *
      * @throws \InvalidArgumentException When route can't be parsed
      */
-    public function load($file, $type = null)
+    public function load($file)
     {
         $path = $this->findFile($file);
 
@@ -42,22 +41,11 @@ class YamlFileLoader extends FileLoader
         $collection = new RouteCollection();
         $collection->addResource(new FileResource($path));
 
-        // empty file
-        if (null === $config) {
-            $config = array();
-        }
-
-        // not an array
-        if (!is_array($config)) {
-            throw new \InvalidArgumentException(sprintf('The file "%s" must contain a YAML array.', $file));
-        }
-
         foreach ($config as $name => $config) {
             if (isset($config['resource'])) {
-                $type = isset($config['type']) ? $config['type'] : null;
                 $prefix = isset($config['prefix']) ? $config['prefix'] : null;
                 $this->currentDir = dirname($path);
-                $collection->addCollection($this->import($config['resource'], $type), $prefix);
+                $collection->addCollection($this->import($config['resource']), $prefix);
             } elseif (isset($config['pattern'])) {
                 $this->parseRoute($collection, $name, $config, $path);
             } else {
@@ -71,24 +59,16 @@ class YamlFileLoader extends FileLoader
     /**
      * Returns true if this class supports the given resource.
      *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
+     * @param  mixed $resource A resource
      *
-     * @return boolean True if this class supports the given resource, false otherwise
+     * @return Boolean true if this class supports the given resource, false otherwise
      */
-    public function supports($resource, $type = null)
+    public function supports($resource)
     {
-        return is_string($resource) && 'yml' === pathinfo($resource, PATHINFO_EXTENSION) && (!$type || 'yaml' === $type);
+        return is_string($resource) && 'yml' === pathinfo($resource, PATHINFO_EXTENSION);
     }
 
     /**
-     * Parses a route and adds it to the RouteCollection.
-     *
-     * @param RouteCollection $collection A RouteCollection instance
-     * @param string          $name       Route name
-     * @param array           $config     Route definition
-     * @param string          $file       A Yaml file path
-     *
      * @throws \InvalidArgumentException When config pattern is not defined for the given route
      */
     protected function parseRoute(RouteCollection $collection, $name, $config, $file)
@@ -106,13 +86,6 @@ class YamlFileLoader extends FileLoader
         $collection->add($name, $route);
     }
 
-    /**
-     * Loads a Yaml file.
-     *
-     * @param string $file A Yaml file path
-     *
-     * @return array
-     */
     protected function loadFile($file)
     {
         return Yaml::load($file);

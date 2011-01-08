@@ -123,6 +123,7 @@ class FrameworkExtension extends Extension
             'Symfony\\Component\\HttpFoundation\\Response',
             'Symfony\\Component\\HttpFoundation\\ResponseHeaderBag',
 
+            'Symfony\\Component\\HttpKernel\\BaseHttpKernel',
             'Symfony\\Component\\HttpKernel\\HttpKernel',
             'Symfony\\Component\\HttpKernel\\ResponseListener',
             'Symfony\\Component\\HttpKernel\\Controller\\ControllerResolver',
@@ -160,16 +161,8 @@ class FrameworkExtension extends Extension
             }
         }
 
-        if (array_key_exists('assets-version', $config)) {
-            $container->setParameter('templating.assets.version', $config['assets-version']);
-        }
-
         if (array_key_exists('assets_version', $config)) {
             $container->setParameter('templating.assets.version', $config['assets_version']);
-        }
-
-        if (array_key_exists('assets-base-urls', $config)) {
-            $container->setParameter('templating.assets.base_urls', $config['assets-base-urls']);
         }
 
         if (array_key_exists('assets_base_urls', $config)) {
@@ -332,10 +325,6 @@ class FrameworkExtension extends Extension
             $container->setParameter('session.class', $config['class']);
         }
 
-        if (isset($config['storage-id'])) {
-            $config['storage_id'] = $config['storage-id'];
-        }
-
         if (isset($config['storage_id'])) {
             $container->setAlias('session.storage', 'session.storage.'.$config['storage_id']);
         } else {
@@ -343,15 +332,9 @@ class FrameworkExtension extends Extension
         }
 
         $options = $container->getParameter('session.storage.'.strtolower($config['storage_id']).'.options');
-        foreach (array('name', 'lifetime', 'path', 'domain', 'secure', 'httponly', 'cache_limiter', 'pdo.db_table', 'pdo.db_id_col', 'pdo.db_data_col', 'pdo.db_time_col') as $name) {
-            $key = str_replace('pdo.', '', $name);
+        foreach (array('name', 'lifetime', 'path', 'domain', 'secure', 'httponly', 'cache_limiter', 'cache-limiter', 'pdo.db_table') as $name) {
             if (isset($config[$name])) {
-                $options[$key] = $config[$name];
-            }
-
-            $nName = str_replace('_', '-', $name);
-            if (isset($config[$nName])) {
-                $options[$key] = $config[$nName];
+                $options[$name] = $config[$name];
             }
         }
         $container->setParameter('session.storage.'.strtolower($config['storage_id']).'.options', $options);

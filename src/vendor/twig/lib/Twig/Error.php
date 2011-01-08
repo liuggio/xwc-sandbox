@@ -21,7 +21,7 @@ class Twig_Error extends Exception
     protected $filename;
     protected $rawMessage;
 
-    public function __construct($message, $lineno = -1, $filename = null)
+    public function __construct($message, $lineno = -1, $filename = 'n/a')
     {
         $this->lineno = $lineno;
         $this->filename = $filename;
@@ -48,7 +48,7 @@ class Twig_Error extends Exception
     {
         $this->message = $this->rawMessage;
 
-        if (null !== $this->filename) {
+        if ('n/a' != $this->filename) {
             $this->message .= sprintf(' in %s', $this->filename);
         }
 

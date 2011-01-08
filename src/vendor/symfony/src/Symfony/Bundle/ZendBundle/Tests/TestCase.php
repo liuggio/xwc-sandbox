@@ -13,7 +13,7 @@ namespace Symfony\Bundle\ZendBundle\Tests;
 
 class TestCase extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public function setUp()
     {
         if (!class_exists('Zend\\Log\\Logger')) {
             $this->markTestSkipped('Zend Framework is not available.');

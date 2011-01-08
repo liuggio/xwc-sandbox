@@ -13,7 +13,7 @@ class CollectionToStringTransformerTest extends \Symfony\Bundle\DoctrineBundle\T
      */
     private $em;
 
-    protected function setUp()
+    public function setUp()
     {
         parent::setUp();
         $this->em = $this->createTestEntityManager();

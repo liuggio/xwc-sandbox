@@ -73,7 +73,8 @@ class ZendExtension extends Extension
             $definition = $container->findDefinition('zend.logger');
             if (false === $config['log_errors'] && $definition->hasMethodCall('registerErrorHandler')) {
                 $container->findDefinition('zend.logger')->removeMethodCall('registerErrorHandler');
-            } else {
+            }
+            else {
                 $container->findDefinition('zend.logger')->addMethodCall('registerErrorHandler');
             }
         }

@@ -42,7 +42,7 @@ class DateTimeToStringTransformer extends BaseValueTransformer
      */
     public function transform($value)
     {
-        if (null === $value) {
+        if ($value === null) {
             return '';
         }
 
@@ -63,7 +63,7 @@ class DateTimeToStringTransformer extends BaseValueTransformer
      */
     public function reverseTransform($value, $originalValue)
     {
-        if ('' === $value) {
+        if ($value === '') {
             return null;
         }
 

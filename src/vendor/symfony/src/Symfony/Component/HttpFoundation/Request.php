@@ -56,7 +56,6 @@ class Request
      */
     public $headers;
 
-    protected $content;
     protected $languages;
     protected $charsets;
     protected $acceptableContentTypes;
@@ -107,7 +106,6 @@ class Request
         $this->server = new ParameterBag(null !== $server ? $server : $_SERVER);
         $this->headers = new HeaderBag($this->initializeHeaders());
 
-        $this->content = null;
         $this->languages = null;
         $this->charsets = null;
         $this->acceptableContentTypes = null;
@@ -131,7 +129,7 @@ class Request
      *
      * @return Request A Request instance
      */
-    static public function create($uri, $method = 'GET', $parameters = array(), $cookies = array(), $files = array(), $server = array())
+    static public function create($uri, $method = 'get', $parameters = array(), $cookies = array(), $files = array(), $server = array())
     {
         $defaults = array(
             'SERVER_NAME'          => 'localhost',
@@ -146,25 +144,7 @@ class Request
             'SCRIPT_FILENAME'      => '',
         );
 
-        $components = parse_url($uri);
-        if (isset($components['host'])) {
-            $defaults['SERVER_NAME'] = $components['host'];
-            $defaults['HTTP_HOST'] = $components['host'];
-        }
-
-        if (isset($components['scheme'])) {
-            if ('https' === $components['scheme']) {
-                $defaults['HTTPS'] = 'on';
-                $defaults['SERVER_PORT'] = 443;
-            }
-        }
-
-        if (isset($components['port'])) {
-            $defaults['SERVER_PORT'] = $components['port'];
-            $defaults['HTTP_HOST'] = $defaults['HTTP_HOST'].':'.$components['port'];
-        }
-
-        if (in_array(strtoupper($method), array('POST', 'PUT', 'DELETE'))) {
+        if (in_array(strtolower($method), array('post', 'put', 'delete'))) {
             $request = $parameters;
             $query = array();
             $defaults['CONTENT_TYPE'] = 'application/x-www-form-urlencoded';
@@ -179,13 +159,11 @@ class Request
             }
         }
 
-        $queryString = isset($components['query']) ? html_entity_decode($components['query']) : '';
+        $queryString = false !== ($pos = strpos($uri, '?')) ? html_entity_decode(substr($uri, $pos + 1)) : '';
         parse_str($queryString, $qs);
         if (is_array($qs)) {
             $query = array_replace($qs, $query);
         }
-
-        $uri = $components['path'] . ($queryString ? '?'.$queryString : '');
 
         $server = array_replace($defaults, $server, array(
             'REQUEST_METHOD'       => strtoupper($method),
@@ -242,14 +220,14 @@ class Request
     /**
      * Overrides the PHP global variables according to this request instance.
      *
-     * It overrides $_GET, $_POST, $_REQUEST, $_SERVER, $_COOKIE, and $_FILES.
+     * It overrides $_GET, $_POST, $_REQUEST, $_SERVER, $_COOKIES, and $_FILES.
      */
     public function overrideGlobals()
     {
         $_GET = $this->query->all();
         $_POST = $this->request->all();
         $_SERVER = $this->server->all();
-        $_COOKIE = $this->cookies->all();
+        $_COOKIES = $this->cookies->all();
         // FIXME: populate $_FILES
 
         foreach ($this->headers->all() as $key => $value) {
@@ -401,7 +379,7 @@ class Request
         $name   = $this->server->get('SERVER_NAME');
         $port   = $this->getPort();
 
-        if (('http' == $scheme && $port == 80) || ('https' == $scheme && $port == 443)) {
+        if (($scheme == 'http' && $port == 80) || ($scheme == 'https' && $port == 443)) {
             return $name;
         } else {
             return $name.':'.$port;
@@ -431,7 +409,7 @@ class Request
             $qs = '?'.$qs;
         }
 
-        return $this->getScheme().'://'.$this->getHttpHost().$this->getBaseUrl().$this->getPathInfo().$qs;
+        return $this->getScheme().'://'.$this->getHost().':'.$this->getPort().$this->getScriptName().$this->getPathInfo().$qs;
     }
 
     /**
@@ -443,7 +421,7 @@ class Request
      */
     public function getUriForPath($path)
     {
-        return $this->getScheme().'://'.$this->getHttpHost().$this->getBaseUrl().$path;
+        return $this->getScheme().'://'.$this->getHost().':'.$this->getPort().$this->getScriptName().$path;
     }
 
     /**
@@ -513,7 +491,7 @@ class Request
     public function setMethod($method)
     {
         $this->method = null;
-        $this->server->set('REQUEST_METHOD', $method);
+        $this->server->set('REQUEST_METHOD', 'GET');
     }
 
     /**
@@ -524,9 +502,25 @@ class Request
     public function getMethod()
     {
         if (null === $this->method) {
-            $this->method = strtoupper($this->server->get('REQUEST_METHOD', 'GET'));
-            if ('POST' === $this->method) {
-                $this->method = strtoupper($this->request->get('_method', 'POST'));
+            switch ($this->server->get('REQUEST_METHOD', 'GET')) {
+                case 'POST':
+                    $this->method = strtoupper($this->request->get('_method', 'POST'));
+                    break;
+
+                case 'PUT':
+                    $this->method = 'PUT';
+                    break;
+
+                case 'DELETE':
+                    $this->method = 'DELETE';
+                    break;
+
+                case 'HEAD':
+                    $this->method = 'HEAD';
+                    break;
+
+                default:
+                    $this->method = 'GET';
             }
         }
 
@@ -613,33 +607,7 @@ class Request
 
     public function isMethodSafe()
     {
-        return in_array($this->getMethod(), array('GET', 'HEAD'));
-    }
-
-    /**
-     * Returns the request body content.
-     *
-     * @param  bool $asResource If true, a resource will be returned
-     *
-     * @return string|resource The request body content or a resource to read the body stream.
-     */
-    public function getContent($asResource = false)
-    {
-        if (false === $this->content || (true === $asResource && null !== $this->content)) {
-            throw new \LogicException('getContent() can only be called once when using the resource return type.');
-        }
-
-        if (true === $asResource) {
-            $this->content = false;
-
-            return fopen('php://input', 'rb');
-        }
-
-        if (null === $this->content) {
-            $this->content = file_get_contents('php://input');
-        }
-
-        return $this->content;
+        return in_array(strtolower($this->getMethod()), array('get', 'head'));
     }
 
     public function getETags()

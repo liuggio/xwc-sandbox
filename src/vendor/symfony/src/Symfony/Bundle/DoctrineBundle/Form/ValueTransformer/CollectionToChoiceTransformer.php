@@ -47,7 +47,7 @@ class CollectionToChoiceTransformer extends BaseValueTransformer
 
         foreach ($collection AS $object) {
             $key = array_search($reflField->getValue($object), $ids);
-            if (false === $key) {
+            if ($key === false) {
                 $collection->removeElement($object);
             } else {
                 unset($ids[$key]);

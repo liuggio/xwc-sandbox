@@ -19,7 +19,7 @@ class MustacheTest extends TestCase
 {
     protected $dir;
 
-    protected function setUp()
+    public function setUp()
     {
         $dir = __DIR__.'/fixtures/';
 
@@ -28,7 +28,7 @@ class MustacheTest extends TestCase
         $filesystem->mirror($dir, $this->dir);
     }
 
-    protected function tearDown()
+    public function tearDown()
     {
         $filesystem = new Filesystem();
         $filesystem->remove($this->dir);

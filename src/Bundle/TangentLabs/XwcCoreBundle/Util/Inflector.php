@@ -1,6 +1,6 @@
 <?php
 //utils from Herzult-ForumBundle
-namespace Bundle\TangentLabs\XwcCoreBundle\Util;
+namespace Application\XwcCoreBundle\Util;
 class Inflector
 {
     public static function slugify($text)

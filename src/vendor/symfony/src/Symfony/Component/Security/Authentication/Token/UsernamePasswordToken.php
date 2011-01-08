@@ -25,7 +25,7 @@ class UsernamePasswordToken extends Token
     {
         parent::__construct($roles);
 
-        $this->setUser($user);
+        $this->user = $user;
         $this->credentials = $credentials;
 
         parent::setAuthenticated((Boolean) count($roles));

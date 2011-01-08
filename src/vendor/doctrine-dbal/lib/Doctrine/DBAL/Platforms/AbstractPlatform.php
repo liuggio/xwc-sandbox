@@ -1418,7 +1418,7 @@ abstract class AbstractPlatform
                 return $upper;
             break;
             default:
-                throw new \InvalidArgumentException('Invalid foreign key action: ' . $upper);
+                throw \InvalidArgumentException('Invalid foreign key action: ' . $upper);
         }
     }
 

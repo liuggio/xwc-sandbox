@@ -23,7 +23,7 @@ use Symfony\Component\EventDispatcher\Event;
  *
  * @author Fabien Potencier <fabien.potencier@symfony-project.com>
  */
-class ChannelListener implements ListenerInterface
+class ChannelListener
 {
     protected $map;
     protected $authenticationEntryPoint;
@@ -42,18 +42,11 @@ class ChannelListener implements ListenerInterface
      * @param EventDispatcher $dispatcher An EventDispatcher instance
      * @param integer         $priority   The priority
      */
-    public function register(EventDispatcher $dispatcher)
+    public function register(EventDispatcher $dispatcher, $priority = 0)
     {
-        $dispatcher->connect('core.security', array($this, 'handle'), 0);
+        $dispatcher->connect('core.security', array($this, 'handle'), $priority);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public function unregister(EventDispatcher $dispatcher)
-    {
-    }
-    
     /**
      * Handles channel management.
      *

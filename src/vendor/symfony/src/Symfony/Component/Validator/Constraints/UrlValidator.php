@@ -30,7 +30,7 @@ class UrlValidator extends ConstraintValidator
 
     public function isValid($value, Constraint $constraint)
     {
-        if (null === $value || '' === $value) {
+        if ($value === null) {
             return true;
         }
 

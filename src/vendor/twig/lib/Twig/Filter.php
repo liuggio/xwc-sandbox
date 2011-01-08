@@ -23,8 +23,12 @@ abstract class Twig_Filter implements Twig_FilterInterface
     {
         $this->options = array_merge(array(
             'needs_environment' => false,
-            'pre_escape'        => null,
         ), $options);
+
+        if (isset($this->options['is_escaper'])) {
+            $this->options['is_safe'] = array('html');
+            unset($this->options['is_escaper']);
+        }
     }
 
     public function needsEnvironment()
@@ -47,6 +51,10 @@ abstract class Twig_Filter implements Twig_FilterInterface
 
     public function getPreEscape()
     {
-        return $this->options['pre_escape'];
+        if (isset($this->options['pre_escape'])) {
+            return $this->options['pre_escape'];
+        }
+
+        return null;
     }
 }

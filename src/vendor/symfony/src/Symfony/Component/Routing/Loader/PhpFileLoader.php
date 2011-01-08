@@ -23,12 +23,11 @@ use Symfony\Component\Routing\Resource\FileResource;
 class PhpFileLoader extends FileLoader
 {
     /**
-     * Loads a PHP file.
+     * Loads an array of PHP files.
      *
-     * @param mixed  $resource A PHP file path
-     * @param string $type     The resource type
+     * @param mixed $resource The resource
      */
-    public function load($file, $type = null)
+    public function load($file)
     {
         $loader = $this;
 
@@ -44,13 +43,12 @@ class PhpFileLoader extends FileLoader
     /**
      * Returns true if this class supports the given resource.
      *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
+     * @param  mixed $resource A resource
      *
-     * @return boolean True if this class supports the given resource, false otherwise
+     * @return Boolean true if this class supports the given resource, false otherwise
      */
-    public function supports($resource, $type = null)
+    public function supports($resource)
     {
-        return is_string($resource) && 'php' === pathinfo($resource, PATHINFO_EXTENSION) && (!$type || 'php' === $type);
+        return is_string($resource) && 'php' === pathinfo($resource, PATHINFO_EXTENSION) && is_file($this->getAbsolutePath($resource));
     }
 }

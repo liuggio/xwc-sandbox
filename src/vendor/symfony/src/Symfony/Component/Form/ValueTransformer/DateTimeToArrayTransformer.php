@@ -49,7 +49,7 @@ class DateTimeToArrayTransformer extends BaseDateTimeTransformer
      */
     public function transform($dateTime)
     {
-        if (null === $dateTime) {
+        if ($dateTime === null) {
             return array(
                 'year'    => '',
                 'month'   => '',
@@ -98,7 +98,7 @@ class DateTimeToArrayTransformer extends BaseDateTimeTransformer
      */
     public function reverseTransform($value, $originalValue)
     {
-        if (null === $value) {
+        if ($value === null) {
             return null;
         }
 

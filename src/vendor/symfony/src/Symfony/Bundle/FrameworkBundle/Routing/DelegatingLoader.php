@@ -47,14 +47,13 @@ class DelegatingLoader extends BaseDelegatingLoader
     /**
      * Loads a resource.
      *
-     * @param mixed  $resource A resource
-     * @param string $type     The resource type
+     * @param  mixed $resource A resource
      *
      * @return RouteCollection A RouteCollection instance
      */
-    public function load($resource, $type = null)
+    public function load($resource)
     {
-        $collection = parent::load($resource, $type);
+        $collection = parent::load($resource);
 
         foreach ($collection->all() as $name => $route) {
             if ($controller = $route->getDefault('_controller')) {

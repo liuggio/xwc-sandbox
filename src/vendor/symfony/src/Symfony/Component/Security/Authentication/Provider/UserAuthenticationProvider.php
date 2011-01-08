@@ -55,16 +55,6 @@ abstract class UserAuthenticationProvider implements AuthenticationProviderInter
 
         try {
             $user = $this->retrieveUser($username, $token);
-
-            if (!$user instanceof AccountInterface) {
-                throw new AuthenticationServiceException('retrieveUser() must return an AccountInterface.');
-            }
-
-            $this->accountChecker->checkPreAuth($user);
-            $this->checkAuthentication($user, $token);
-            $this->accountChecker->checkPostAuth($user);
-
-            return new UsernamePasswordToken($user, $token->getCredentials(), $user->getRoles());
         } catch (UsernameNotFoundException $notFound) {
             if ($this->hideUserNotFoundExceptions) {
                 throw new BadCredentialsException('Bad credentials', 0, $notFound);
@@ -72,6 +62,16 @@ abstract class UserAuthenticationProvider implements AuthenticationProviderInter
 
             throw $notFound;
         }
+
+        if (!$user instanceof AccountInterface) {
+            throw new AuthenticationServiceException('The retrieveUser() methods must return an AccountInterface object.');
+        }
+
+        $this->accountChecker->checkPreAuth($user);
+        $this->checkAuthentication($user, $token);
+        $this->accountChecker->checkPostAuth($user);
+
+        return new UsernamePasswordToken($user, $token->getCredentials(), $user->getRoles());
     }
 
     /**
@@ -88,7 +88,7 @@ abstract class UserAuthenticationProvider implements AuthenticationProviderInter
      * @param string                $username The username to retrieve
      * @param UsernamePasswordToken $token    The Token
      *
-     * @return array The user
+     * @return AccountInterface The user
      *
      * @throws AuthenticationException if the credentials could not be validated
      */

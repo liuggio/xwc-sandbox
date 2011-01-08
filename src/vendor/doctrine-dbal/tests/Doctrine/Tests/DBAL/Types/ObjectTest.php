@@ -45,12 +45,4 @@ class ObjectTest extends \Doctrine\Tests\DbalTestCase
     {
         $this->assertNull($this->_type->convertToPHPValue(null, $this->_platform));
     }
-
-    /**
-     * @group DBAL-73
-     */
-    public function testFalseConversion()
-    {
-        $this->assertFalse($this->_type->convertToPHPValue(serialize(false), $this->_platform));
-    }
 }
